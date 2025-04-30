@@ -1,8 +1,11 @@
 package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
+import com.lyttledev.lyttlegravestone.utils.Memory;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,6 +25,13 @@ public class InventoryClick implements Listener {
 
         Inventory clickedInventory = event.getClickedInventory();
         Inventory playerInventory = event.getWhoClicked().getInventory();
+
+        int inventorySize = event.getInventory().getSize();
+        if (inventorySize != 54) { return; }
+
+        Player player = (Player) event.getWhoClicked();
+        Location location = Memory.getGravestoneLocation(player);
+        if (location == null) { return; }
 
         if (event.getClick().isShiftClick()) {
             if (playerInventory == clickedInventory) {
