@@ -25,9 +25,11 @@ import org.bukkit.util.Vector;
 import java.sql.SQLException;
 
 public class Death implements Listener {
+    public static LyttleGravestone plugin;
 
     public Death(LyttleGravestone plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        Death.plugin = plugin;
     }
 
     @EventHandler
@@ -81,15 +83,28 @@ public class Death implements Listener {
             int y = location.getBlockY();
             int z = location.getBlockZ();
 
-            String[][] replacements = {
-                {"<WORLD>", world},
-                {"<X>", String.valueOf(x)},
-                {"<Y>", String.valueOf(y)},
-                {"<Z>", String.valueOf(z)},
-                {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
-            };
 
-            Message.sendMessage(player, "death_message", replacements);
+            Boolean command = (Boolean) plugin.config.general.get("retrieve_command_active");
+            Boolean vault = (Boolean) plugin.config.general.get("use_vault");
+
+            if (command && vault) {
+                String[][] replacements = {
+                        {"<WORLD>", world},
+                        {"<X>", String.valueOf(x)},
+                        {"<Y>", String.valueOf(y)},
+                        {"<Z>", String.valueOf(z)},
+                        {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
+                };
+                Message.sendMessage(player, "death_message", replacements);
+            } else {
+                String[][] replacements = {
+                        {"<WORLD>", world},
+                        {"<X>", String.valueOf(x)},
+                        {"<Y>", String.valueOf(y)},
+                        {"<Z>", String.valueOf(z)},
+                };
+                Message.sendMessage(player, "death_message_no_delivery", replacements);
+            }
 
         } catch (SQLException exception) {
             exception.printStackTrace();
