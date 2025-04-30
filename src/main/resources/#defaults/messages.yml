@@ -10,4 +10,5 @@ retrieve_price_changed: The price you entered is incorrect. Please try again.
 no_gravestone_found: No gravestone found at <COORDINATES>
 not_enough_money: 'You do not have enough money to retrieve this gravestone. Cost:  <PRICE>'
 death_message: <gray>You died! You can retrieve your gravestone at </gray><dark_gray><bold><WORLD> <X> <Y> <Z></bold><gray>. Or you can pay to get it delivered, by clicking </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray>!</gray>
+death_message_no_delivery: <gray>You died! You can retrieve your gravestone at </gray><dark_gray><bold><WORLD> <X> <Y> <Z></bold><gray>.
 retrieve_confirm: <gray>Retrieving the gravestone will cost you </gray><bold><dark_gray><PRICE></dark_gray></bold><gray> tokens. Click </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray> to CONFIRM the retrieve of your items.</gray>
