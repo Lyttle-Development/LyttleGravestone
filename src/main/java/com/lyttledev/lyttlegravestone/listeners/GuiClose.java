@@ -56,6 +56,8 @@ public class GuiClose implements Listener {
         Location location = Memory.getGravestoneLocation(player);
         Memory.closeGravestone(player, location);
 
+        if (location == null) { return; }
+
         boolean isEmpty = true;
         for (ItemStack item : gravestoneInventory) {
             if (item != null) {
