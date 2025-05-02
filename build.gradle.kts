@@ -66,6 +66,7 @@ val copyContents by tasks.registering(Copy::class) {
     from(sourceFolder) {
         // Exclude the destination folder itself to avoid copying it into itself
         exclude("#defaults/**")
+        exclude("plugin.yml")
     }
     into(destinationFolder)
 
@@ -116,7 +117,7 @@ val versionString: String =  if (System.getenv("CHANNEL") == "Release") {
 }
 
 tasks.named<ProcessResources>("processResources") {
-    filesMatching("paper-plugin.yml") {
+    filesMatching("plugin.yml") {
         expand("projectVersion" to versionString)
     }
 }
