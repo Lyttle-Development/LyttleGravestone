@@ -6,4 +6,4 @@ authors:
   - ThatsATim
   - Stualyttle
 
-softdepend: [Vault]
+softdepend: [Vault, LyttleScoreboardEconomy]
