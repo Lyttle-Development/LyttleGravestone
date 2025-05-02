@@ -115,8 +115,14 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 return 0;
             }
 
+            // Check if the player is in the same world
+            boolean sameWorld = player.getWorld().getName().equals(world);
+            Location calulatedLocation = player.getLocation();
+            if (!sameWorld) {
+                calulatedLocation.setWorld(Bukkit.getWorld(world));
+            }
             // Calculate the distance between the player and the gravestone
-            double distance = location.distance(gravestoneLocation);
+            double distance = calulatedLocation.distance(gravestoneLocation);
 
             // Get cost of retrieving the gravestone every 100 blocks
             // TODO: would be a nice feature to put this in a config
@@ -124,6 +130,10 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // Calculate the cost of retrieving the gravestone
             int cost = (int) Math.ceil(distance / 100) * cost100xBlocks;
+            // Add 100 cost if the player is not in the same world
+            if (!sameWorld) {
+                cost += 100;
+            }
 
             // Check if the player has enough money
             if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
