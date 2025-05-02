@@ -7,4 +7,4 @@ retrieve_command_active: true
 # Default = true
 use_vault: true
 
-config_version: 1
+config_version: 2
