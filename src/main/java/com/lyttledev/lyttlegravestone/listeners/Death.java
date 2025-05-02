@@ -85,9 +85,8 @@ public class Death implements Listener {
 
 
             Boolean command = (Boolean) plugin.config.general.get("retrieve_command_active");
-            Boolean vault = (Boolean) plugin.config.general.get("use_vault");
 
-            if (command && vault) {
+            if (command) {
                 String[][] replacements = {
                         {"<WORLD>", world},
                         {"<X>", String.valueOf(x)},
