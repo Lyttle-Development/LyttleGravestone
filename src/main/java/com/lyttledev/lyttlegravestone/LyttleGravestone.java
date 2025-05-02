@@ -170,6 +170,17 @@ public final class LyttleGravestone extends JavaPlugin {
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();
+            case "2":
+                // Migrate config entries.
+                config.general.set("retrieve_command_blocks", config.defaultGeneral.get("retrieve_command_blocks"));
+                config.general.set("retrieve_command_price", config.defaultGeneral.get("retrieve_command_price"));
+                config.general.set("retrieve_command_price__other_world", config.defaultGeneral.get("retrieve_command_price__other_world"));
+
+                // Update config version.
+                config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
             default:
                 break;
         }
