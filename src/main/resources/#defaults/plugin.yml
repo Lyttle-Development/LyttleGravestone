@@ -1,9 +1,0 @@
-name: LyttleGravestone
-version: '${projectVersion}'
-main: com.lyttledev.lyttlegravestone.LyttleGravestone
-api-version: '1.20'
-authors:
-  - ThatsATim
-  - Stualyttle
-
-softdepend: [Vault, LyttleScoreboardEconomy]
