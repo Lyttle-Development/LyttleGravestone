@@ -59,7 +59,25 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         try {
+            // Get config options:
+            Boolean useRetrieveCommand = (Boolean) plugin.config.general.get("retrieve_command_active");
             Boolean usesVault = (Boolean) plugin.config.general.get("use_vault");
+            Integer configBlocks  = (Integer) plugin.config.general.get("retrieve_command_blocks");
+            Integer configPrice  = (Integer) plugin.config.general.get("retrieve_command_price");
+            Integer configWorldPrice  = (Integer) plugin.config.general.get("retrieve_command_price__other_world");
+
+            if (
+                // Check if the command is enabled
+                (useRetrieveCommand != null && !useRetrieveCommand)
+                // Check if the config options are not null
+                || configBlocks == null
+                || configPrice == null
+                || configWorldPrice == null
+                || usesVault == null
+            ) {
+                return 0;
+            }
+
             CommandSourceStack source = context.getSource();
 
             Entity entity = source.getExecutor();
@@ -126,13 +144,12 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // Get cost of retrieving the gravestone every 100 blocks
             // TODO: would be a nice feature to put this in a config
-            int cost100xBlocks = 3;
 
             // Calculate the cost of retrieving the gravestone
-            int cost = (int) Math.ceil(distance / 100) * cost100xBlocks;
+            int cost = (int) Math.ceil(distance / configBlocks) * configPrice;
             // Add 100 cost if the player is not in the same world
             if (!sameWorld) {
-                cost += 100;
+                cost += configWorldPrice;
             }
 
             // Check if the player has enough money
