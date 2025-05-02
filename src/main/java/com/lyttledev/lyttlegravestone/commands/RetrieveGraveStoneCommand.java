@@ -57,14 +57,15 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+
+        Entity entity = source.getExecutor();
+
+        if (!(entity instanceof Player)) { return 0; }
+
+        Player player = (Player) entity;
+
         try {
-            CommandSourceStack source = context.getSource();
-
-            Entity entity = source.getExecutor();
-
-            if (!(entity instanceof Player)) { return 0; }
-
-            Player player = (Player) entity;
             Location location = entity.getLocation();
 
             if (Memory.checkDelivery(player)) { return 0; }
@@ -172,6 +173,8 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             Memory.removeDelivery(player);
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
+
+            Memory.removeDelivery(player);
             e.printStackTrace();
             return 0;
         }
