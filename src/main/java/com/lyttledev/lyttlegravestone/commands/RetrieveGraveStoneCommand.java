@@ -88,6 +88,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             try {
                 values = GravestoneDatabase.getGravestone(gravestoneLocation);
             } catch (SQLException e) {
+                Memory.removeDelivery(player);
                 throw new RuntimeException(e);
             }
 
@@ -168,6 +169,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 }
             });
 
+            Memory.removeDelivery(player);
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
