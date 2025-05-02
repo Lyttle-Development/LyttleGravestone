@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -58,16 +59,37 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         try {
+            // Get config options:
+            Boolean useRetrieveCommand = (Boolean) plugin.config.general.get("retrieve_command_active");
+            Boolean usesVault = (Boolean) plugin.config.general.get("use_vault");
+            Integer configBlocks  = (Integer) plugin.config.general.get("retrieve_command_blocks");
+            Integer configPrice  = (Integer) plugin.config.general.get("retrieve_command_price");
+            Integer configWorldPrice  = (Integer) plugin.config.general.get("retrieve_command_price__other_world");
+
+            if (
+                // Check if the command is enabled
+                (useRetrieveCommand != null && !useRetrieveCommand)
+                // Check if the config options are not null
+                || configBlocks == null
+                || configPrice == null
+                || configWorldPrice == null
+                || usesVault == null
+            ) {
+                return 0;
+            }
+
             CommandSourceStack source = context.getSource();
 
             Entity entity = source.getExecutor();
 
-            if (!(entity instanceof Player)) {
-                return 0;
-            }
+            if (!(entity instanceof Player)) { return 0; }
 
             Player player = (Player) entity;
+            UUID uuid = player.getUniqueId();
             Location location = entity.getLocation();
+
+            if (Memory.checkDelivery(uuid)) { return 0; }
+            Memory.addDelivery(uuid);
 
             String world = context.getArgument("world", String.class);
             String x = context.getArgument("x", String.class);
@@ -98,6 +120,11 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // UUID and player related logic
             String graveOwnerString = values[0];
+            if (graveOwnerString == null || graveOwnerString.isEmpty()) {
+                Memory.removeDelivery(uuid);
+                return 0;
+            }
+
             Player graveOwnerPlayer = Bukkit.getPlayer(UUID.fromString(graveOwnerString));
 
             // Permission logic
@@ -106,30 +133,42 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 return 0;
             }
 
+            // Check if the player is in the same world
+            boolean sameWorld = player.getWorld().getName().equals(world);
+            Location calulatedLocation = player.getLocation();
+            if (!sameWorld) {
+                calulatedLocation.setWorld(Bukkit.getWorld(world));
+            }
             // Calculate the distance between the player and the gravestone
-            double distance = location.distance(gravestoneLocation);
+            double distance = calulatedLocation.distance(gravestoneLocation);
 
             // Get cost of retrieving the gravestone every 100 blocks
-            int cost100xBlocks = 3;
+            // TODO: would be a nice feature to put this in a config
 
             // Calculate the cost of retrieving the gravestone
-            int cost = (int) Math.ceil(distance / 100) * cost100xBlocks;
+            int cost = (int) Math.ceil(distance / configBlocks) * configPrice;
+            // Add 100 cost if the player is not in the same world
+            if (!sameWorld) {
+                cost += configWorldPrice;
+            }
 
             // Check if the player has enough money
-            if (economy != null && economy.getBalance(player) < cost || economy == null) {
+            if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
                 String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
                 Message.sendMessage(player, "not_enough_money", replacements);
+                Memory.removeDelivery(uuid);
                 return 0;
             }
 
-            // Check if the player has confirmed the retrieval
+            // Check if the player has not confirmed the retrieval
             // TODO, put this thing in a config
-            if (!confirm) {
+            if (usesVault && !confirm) {
                 String[][] replacements = {
                         {"<PRICE>", String.valueOf(cost)},
                         {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost}
                 };
 
+                Memory.removeDelivery(uuid);
                 Message.sendMessage(player, "retrieve_confirm", replacements);
                 return 0;
             }
@@ -140,26 +179,16 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 price = Integer.parseInt(priceArg);
             } catch (IllegalArgumentException ignored) {}
 
-            if (price != cost) {
+            if (usesVault && price != cost) {
                 Message.sendMessage(player,"retrieve_price_changed");
+                Memory.removeDelivery(uuid);
                 return 0;
             }
 
             // Inventory logic
             String DatabaseInventory = values[1];
             ItemStack[] inventory = ItemSerializer.deserializeInventory(DatabaseInventory, 0);
-
-            // Run your async function
-            runAsync(() -> {
-                try {
-                    // Start animation asynchronously and wait for it to complete
-                    startAnimation(location).get();
-                    runEnd(player, location, gravestoneLocation, inventory, cost).get();
-                } catch (Exception e) {
-                    runEnd(player, location, gravestoneLocation, inventory, cost);
-                    e.printStackTrace();
-                }
-            });
+            startDelivery(player, location, gravestoneLocation, inventory, cost, uuid);
 
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
@@ -168,7 +197,21 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
         }
     }
 
-    private CompletableFuture<Void> runEnd(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost) {
+    public void startDelivery(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
+        // Run your async function
+        runAsync(() -> {
+            try {
+                // Start animation asynchronously and wait for it to complete
+                startAnimation(location).get();
+                runEnd(player, location, gravestoneLocation, inventory, cost, uuid).get();
+            } catch (Exception e) {
+                runEnd(player, location, gravestoneLocation, inventory, cost, uuid);
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private CompletableFuture<Void> runEnd(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
         return CompletableFuture.runAsync(() -> {
             // Run synchronous Bukkit tasks
             new BukkitRunnable() {
@@ -188,6 +231,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             try {
                 GravestoneDatabase.deleteGravestone(gravestoneLocation);
                 Memory.deleteGravestone(gravestoneLocation);
+                Memory.removeDelivery(uuid);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

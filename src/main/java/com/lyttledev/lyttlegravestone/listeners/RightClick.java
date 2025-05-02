@@ -52,11 +52,11 @@ public class RightClick implements Listener {
             String graveOwnerString = values[0];
             Player graveOwnerPlayer = Bukkit.getPlayer(UUID.fromString(graveOwnerString));
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(graveOwnerString));
-            String graveOwnerName = graveOwnerPlayer != null ? graveOwnerPlayer.getName() : offlinePlayer.getName();
+            String graveOwnerName = graveOwnerPlayer != null ? getDisplayName(graveOwnerPlayer) : offlinePlayer.getName();
 
             // Permission logic
             if (player != graveOwnerPlayer && !player.hasPermission("lyttlegravestone.Staff")) {
-                String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
+                String[][] replacements = {{"<PLAYER>", graveOwnerName}};
                 Message.sendMessage(player, "wrong_player", replacements);
                 return;
             }

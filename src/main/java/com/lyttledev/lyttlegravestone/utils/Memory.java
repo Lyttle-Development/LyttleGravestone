@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class Memory {
 
@@ -39,5 +40,20 @@ public class Memory {
             if (BlockLocation.isSameBlockLocation(gravestones.get(index), location)) { return index; }
         }
         return -1;
+    }
+
+
+    // Keeps track of deliveries in progress
+    private static final List<UUID> deliveriesInProgress = new ArrayList<>();
+
+    public static void addDelivery(UUID uuid) { deliveriesInProgress.add(uuid); }
+
+    public static void removeDelivery(UUID uuid) { deliveriesInProgress.remove(uuid); }
+
+    public static boolean checkDelivery(UUID player) {
+        for (UUID uuidEntry : deliveriesInProgress) {
+            if (uuidEntry.equals(player)) { return true; }
+        }
+        return false;
     }
 }
