@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -58,6 +59,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         try {
+            Boolean usesVault = (Boolean) plugin.config.general.get("use_vault");
             CommandSourceStack source = context.getSource();
 
             Entity entity = source.getExecutor();
@@ -124,7 +126,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             int cost = (int) Math.ceil(distance / 100) * cost100xBlocks;
 
             // Check if the player has enough money
-            if (economy != null && economy.getBalance(player) < cost || economy == null) {
+            if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
                 String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
                 Message.sendMessage(player, "not_enough_money", replacements);
                 Memory.removeDelivery(uuid);
@@ -133,7 +135,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // Check if the player has not confirmed the retrieval
             // TODO, put this thing in a config
-            if (!confirm) {
+            if (usesVault && !confirm) {
                 String[][] replacements = {
                         {"<PRICE>", String.valueOf(cost)},
                         {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost}
@@ -150,7 +152,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 price = Integer.parseInt(priceArg);
             } catch (IllegalArgumentException ignored) {}
 
-            if (price != cost) {
+            if (usesVault && price != cost) {
                 Message.sendMessage(player,"retrieve_price_changed");
                 Memory.removeDelivery(uuid);
                 return 0;
