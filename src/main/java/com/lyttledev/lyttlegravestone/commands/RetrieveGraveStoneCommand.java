@@ -62,12 +62,13 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             Entity entity = source.getExecutor();
 
-            if (!(entity instanceof Player)) {
-                return 0;
-            }
+            if (!(entity instanceof Player)) { return 0; }
 
             Player player = (Player) entity;
             Location location = entity.getLocation();
+
+            if (Memory.checkDelivery(player)) { return 0; }
+            Memory.addDelivery(player);
 
             String world = context.getArgument("world", String.class);
             String x = context.getArgument("x", String.class);
@@ -93,6 +94,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             if (values == null) {
                 String[][] replacements = {{"<COORDINATES>", x + " " + y + " " + z}};
                 Message.sendMessage(player, "no_gravestone_found", replacements);
+                Memory.removeDelivery(player);
                 return 0;
             }
 
@@ -103,6 +105,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             // Permission logic
             if (player != graveOwnerPlayer && !player.hasPermission("lyttlegravestone.staff")) {
                 Message.sendMessage(player, "no_permission");
+                Memory.removeDelivery(player);
                 return 0;
             }
 
@@ -110,6 +113,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             double distance = location.distance(gravestoneLocation);
 
             // Get cost of retrieving the gravestone every 100 blocks
+            // TODO: would be a nice feature to put this in a config
             int cost100xBlocks = 3;
 
             // Calculate the cost of retrieving the gravestone
@@ -119,6 +123,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             if (economy != null && economy.getBalance(player) < cost || economy == null) {
                 String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
                 Message.sendMessage(player, "not_enough_money", replacements);
+                Memory.removeDelivery(player);
                 return 0;
             }
 
@@ -130,6 +135,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                         {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost}
                 };
 
+                Memory.removeDelivery(player);
                 Message.sendMessage(player, "retrieve_confirm", replacements);
                 return 0;
             }
@@ -142,6 +148,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             if (price != cost) {
                 Message.sendMessage(player,"retrieve_price_changed");
+                Memory.removeDelivery(player);
                 return 0;
             }
 
@@ -188,6 +195,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             try {
                 GravestoneDatabase.deleteGravestone(gravestoneLocation);
                 Memory.deleteGravestone(gravestoneLocation);
+                Memory.removeDelivery(player);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

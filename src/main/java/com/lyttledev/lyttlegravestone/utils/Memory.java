@@ -40,4 +40,20 @@ public class Memory {
         }
         return -1;
     }
+
+
+    // Keeps track of deliveries in progress
+    private static final List<Player> deliveriesInProgress = new ArrayList<>();
+
+    public static void addDelivery(Player player) { deliveriesInProgress.add(player); }
+
+    public static void removeDelivery(Player player) { deliveriesInProgress.remove(player); }
+
+    public static boolean checkDelivery(Player player) {
+        for (Player playerEntry : deliveriesInProgress) {
+            if (playerEntry.equals(player)) { return true; }
+        }
+        return false;
+    }
+
 }

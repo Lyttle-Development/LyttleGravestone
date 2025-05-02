@@ -65,6 +65,9 @@ public class BreakBlock implements Listener {
                 }
             }
 
+            // Make sure the stairs are gone at this point
+            block.setType(Material.AIR);
+
             try {
                 GravestoneDatabase.deleteGravestone(location);
                 Memory.deleteGravestone(location);

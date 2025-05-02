@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Stairs;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,25 +25,44 @@ import org.bukkit.util.Vector;
 import java.sql.SQLException;
 
 public class Death implements Listener {
+    public static LyttleGravestone plugin;
 
     public Death(LyttleGravestone plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        Death.plugin = plugin;
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
 
-        // Get all Items of the player and prevent normal drops
+        // Get all Items of the player
         Player player = event.getPlayer();
         PlayerInventory playerInventory = player.getInventory();
         if (playerInventory.isEmpty()) { return; }
         ItemStack cursorItem = player.getItemOnCursor();
+
+        // Check for curse of vanishing
+        for (ItemStack item : playerInventory) {
+            if (item == null) {
+                continue;
+            }
+            if (item.containsEnchantment(Enchantment.VANISHING_CURSE)) {
+                item.setAmount(0);
+            }
+        }
+
+        if (cursorItem.containsEnchantment(Enchantment.VANISHING_CURSE)) {
+            player.setItemOnCursor(null);
+        }
+
+        // Set the correct inventory layout and prevent normal death drops
         ItemStack[] gravestoneInventory = setLayout(playerInventory, cursorItem);
         player.setItemOnCursor(null);
         event.getDrops().clear();
-        Location playerLocation = player.getLocation();
+        playerInventory.clear();
 
         // Check if the location is safe!
+        Location playerLocation = player.getLocation();
         LocationChecker.getSafe(playerLocation);
 
         // Spawn the tombstone
@@ -62,15 +83,28 @@ public class Death implements Listener {
             int y = location.getBlockY();
             int z = location.getBlockZ();
 
-            String[][] replacements = {
-                {"<WORLD>", world},
-                {"<X>", String.valueOf(x)},
-                {"<Y>", String.valueOf(y)},
-                {"<Z>", String.valueOf(z)},
-                {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
-            };
 
-            Message.sendMessage(player, "death_message", replacements);
+            Boolean command = (Boolean) plugin.config.general.get("retrieve_command_active");
+            Boolean vault = (Boolean) plugin.config.general.get("use_vault");
+
+            if (command && vault) {
+                String[][] replacements = {
+                        {"<WORLD>", world},
+                        {"<X>", String.valueOf(x)},
+                        {"<Y>", String.valueOf(y)},
+                        {"<Z>", String.valueOf(z)},
+                        {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
+                };
+                Message.sendMessage(player, "death_message", replacements);
+            } else {
+                String[][] replacements = {
+                        {"<WORLD>", world},
+                        {"<X>", String.valueOf(x)},
+                        {"<Y>", String.valueOf(y)},
+                        {"<Z>", String.valueOf(z)},
+                };
+                Message.sendMessage(player, "death_message_no_delivery", replacements);
+            }
 
         } catch (SQLException exception) {
             exception.printStackTrace();
