@@ -41,9 +41,12 @@ public class BreakBlock implements Listener {
             try {
                 String[] values = GravestoneDatabase.getGravestone(location);
                 UUID graveOwnerUUID = UUID.fromString(values[0]);
+                Player graveOwnerPlayer = Bukkit.getPlayer(graveOwnerUUID);
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(graveOwnerUUID);
+                String graveOwnerName = graveOwnerPlayer != null ? getDisplayName(graveOwnerPlayer) : offlinePlayer.getName();
 
                 if (!graveOwnerUUID.equals(player.getUniqueId()) && !player.hasPermission("lyttlegravestone.Staff")) {
-                    String[][] replacements = {{"<PLAYER>", getDisplayName(player)}};
+                    String[][] replacements = {{"<PLAYER>", graveOwnerName}};
                     Message.sendMessage(player, "wrong_player", replacements);
                     event.setCancelled(true);
                     return;
