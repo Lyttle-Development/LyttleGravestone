@@ -159,24 +159,27 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             // Inventory logic
             String DatabaseInventory = values[1];
             ItemStack[] inventory = ItemSerializer.deserializeInventory(DatabaseInventory, 0);
-
-            // Run your async function
-            runAsync(() -> {
-                try {
-                    // Start animation asynchronously and wait for it to complete
-                    startAnimation(location).get();
-                    runEnd(player, location, gravestoneLocation, inventory, cost, uuid).get();
-                } catch (Exception e) {
-                    runEnd(player, location, gravestoneLocation, inventory, cost, uuid);
-                    e.printStackTrace();
-                }
-            });
+            startDelivery(player, location, gravestoneLocation, inventory, cost, uuid);
 
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public void startDelivery(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
+        // Run your async function
+        runAsync(() -> {
+            try {
+                // Start animation asynchronously and wait for it to complete
+                startAnimation(location).get();
+                runEnd(player, location, gravestoneLocation, inventory, cost, uuid).get();
+            } catch (Exception e) {
+                runEnd(player, location, gravestoneLocation, inventory, cost, uuid);
+                e.printStackTrace();
+            }
+        });
     }
 
     private CompletableFuture<Void> runEnd(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
