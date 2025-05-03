@@ -185,6 +185,9 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 return 0;
             }
 
+            // Send delivery message
+            Message.sendMessage(player,"retrieve_confirmed");
+
             // Inventory logic
             String DatabaseInventory = values[1];
             ItemStack[] inventory = ItemSerializer.deserializeInventory(DatabaseInventory, 0);

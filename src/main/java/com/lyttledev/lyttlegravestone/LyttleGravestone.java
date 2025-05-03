@@ -1,5 +1,6 @@
 package com.lyttledev.lyttlegravestone;
 
+import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.listeners.*;
@@ -91,8 +92,11 @@ public final class LyttleGravestone extends JavaPlugin {
     public void registerCommands(Commands commands) {
         Boolean command = (Boolean) config.general.get("retrieve_command_active");
         if (command) {
+            // Retrieve command
             RetrieveGraveStoneCommand.register(this, commands);
         }
+        // Lyttle gravestone command
+        LyttleGravestoneCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {
@@ -178,6 +182,15 @@ public final class LyttleGravestone extends JavaPlugin {
 
                 // Update config version.
                 config.general.set("config_version", 3);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
+            case "3":
+                // Migrate config entries.
+                config.messages.set("retrieve_confirmed", config.defaultMessages.get("retrieve_confirmed"));
+
+                // Update config version.
+                config.general.set("config_version", 4);
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();

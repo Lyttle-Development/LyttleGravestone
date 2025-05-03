@@ -1,32 +1,52 @@
 ##################################################
-# Welcome to the config.yml for Lyttle Gravestone.
+#         Lyttle Gravestone - config.yml         #
 ##################################################
-# This file contains all the settings for the plugin.
-# You can change the settings to your liking, but be careful not to break the file.
-# Removing an option will break the plugin, look in #defaults/config.yml for the default values.
-###############################################################################################
+# This file contains all configuration settings for the plugin.
+# You are free to customize these settings to your server's needs.
+#
+# ⚠️ WARNING: Do NOT remove any keys from this file.
+# Doing so may cause the plugin to break or behave unexpectedly.
+# If you're unsure, refer to #defaults/config.yml for original values.
+##################################################
 
-# Toggle the /retrievegravestone or /rg command
-# [Default]: retrieve_command_active: true
+##############################
+# Retrieve Command Settings #
+##############################
+
+# Enables or disables the /retrievegravestone (/rg) command.
+# If set to false, the command will be unavailable to players.
+# [Default]: true
 retrieve_command_active: true
-# Distance to calculate the price of the delivery from.
-# Formula is: (distance / retrieve_command_blocks) * retrieve_command_price
-# [Default]: retrieve_command_distance: 100
+
+# Distance block chunk size used in delivery cost calculation.
+# Formula: (distance / retrieve_command_blocks) * retrieve_command_price
+# [Default]: 100
 retrieve_command_blocks: 100
-# Price per blocks (defined above):
-# WARNING: "use_vault" must be true for this to work. Otherwise, it will be 0.
-# [Default]: retrieve_command_price: 3
+
+# Cost per block chunk (as defined above).
+# This value is only applied if "use_vault" is set to true.
+# [Default]: 3
 retrieve_command_price: 3
-# Price that's added on the total delivery price when ordering a delivery from another world.
-# WARNING: "use_vault" must be true for this to work. Otherwise, it will be 0.
-# [Default]: retrieve_command_price__other_world: 100
+
+# Additional cost added when retrieving a gravestone from a different world.
+# This is added *once* on top of the normal distance-based cost.
+# Only applied if "use_vault" is enabled.
+# [Default]: 100
 retrieve_command_price__other_world: 100
 
-# Use the vault economy for the plugin.
-# INFO: If disabled, and retrieve_command_active is true, the price will be 0.
-# [Default]: use_vault: true
+##########################
+# Economy Integration    #
+##########################
+
+# Enables integration with Vault-based economy plugins.
+# If false, retrieval will cost 0 tokens regardless of other settings.
+# [Default]: true
 use_vault: true
 
-# The version of this config file.
-# DO NOT CHANGE THIS. (We use this to migrate your config over time and with updates.)
+##########################
+# Configuration Version  #
+##########################
+
+# DO NOT EDIT THIS VALUE.
+# This is used internally to manage config migrations on plugin updates.
 config_version: 2
