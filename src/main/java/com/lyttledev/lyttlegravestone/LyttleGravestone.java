@@ -1,5 +1,6 @@
 package com.lyttledev.lyttlegravestone;
 
+import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.listeners.*;
@@ -91,8 +92,11 @@ public final class LyttleGravestone extends JavaPlugin {
     public void registerCommands(Commands commands) {
         Boolean command = (Boolean) config.general.get("retrieve_command_active");
         if (command) {
+            // Retrieve command
             RetrieveGraveStoneCommand.register(this, commands);
         }
+        // Lyttle gravestone command
+        LyttleGravestoneCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {
