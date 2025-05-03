@@ -1,14 +1,66 @@
-prefix: <dark_aqua><bold>Lyttle<aqua><bold>Gravestone<reset> <dark_gray>- <gray>
-no_permission: <red>You do not have permission to do that!
-player_not_found: <dark_red>Player not found
-must_be_player: <red>You must be a player to use this command!
-message_not_found: <red>Oh... I can''t react to that. (Contact the Administrators)
+####################################################
+#        Lyttle Gravestone - messages.yml          #
+####################################################
+# This file contains all in-game messages used by the plugin.
+# You can format messages using Minecraft color codes and MiniMessage.
+#
+# ⚠️ Do NOT remove any keys — the plugin relies on them to function properly.
+# You may customize text and formatting as needed.
+####################################################
 
-# Grave messages
-wrong_player: This is the resting place of <PLAYER>, and you do not have permission to access it!\nMessage a staff member if you like it to be removed.
+##################################
+# Plugin Message Prefix
+##################################
+
+# This prefix is prepended to nearly all messages.
+# Use MiniMessage format (colors, bold, etc.) to style your branding.
+prefix: <dark_aqua><bold>Lyttle<aqua><bold>Gravestone<reset> <dark_gray>- <gray>
+
+##################################
+# General / Admin User Feedback
+##################################
+
+# Sent when a player attempts an action they lack permission for
+no_permission: <red>You do not have permission to do that!
+
+# Sent when a player name is invalid or the target player is not online
+player_not_found: <dark_red>Player not found
+
+# Sent when a command is used from the console or a non-player entity
+must_be_player: <red>You must be a player to use this command!
+
+# Fallback message used when a referenced message key does not exist
+# Helps catch misconfigurations or plugin errors
+message_not_found: <red>Oh... I can't react to that. (Contact the Administrators)
+
+##################################
+# Grave Access & Error Messages
+##################################
+
+# Sent when a player tries to access another player's gravestone
+wrong_player: This is the resting place of <PLAYER>, and you do not have permission to access it!\nMessage a staff member if you’d like it removed.
+
+# Triggered when the delivery cost has changed since the player initiated the retrieval
 retrieve_price_changed: The price you entered is incorrect. Please try again.
+
+# Used when no gravestone is found at the expected location
 no_gravestone_found: No gravestone found at <COORDINATES>
+
+# Sent if a player does not have enough in-game currency to retrieve their gravestone
 not_enough_money: 'You do not have enough money to retrieve this gravestone. Cost:  <PRICE>'
-death_message: <gray>You died! You can retrieve your gravestone at </gray><dark_gray><bold><WORLD> <X> <Y> <Z></bold><gray>. Or you can pay to get it delivered, by clicking </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray>!</gray>
+
+##################################
+# Death Notices & Retrieval Flow
+##################################
+
+# Death notification with clickable delivery option
+death_message: <gray>You died! You can retrieve your gravestone at </gray><dark_gray><bold><WORLD> <X> <Y> <Z></bold><gray>. Or you can pay to get it delivered by clicking </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray>!</gray>
+
+# Variant of the above if gravestone delivery is disabled
 death_message_no_delivery: <gray>You died! You can retrieve your gravestone at </gray><dark_gray><bold><WORLD> <X> <Y> <Z></bold><gray>.
-retrieve_confirm: <gray>Retrieving the gravestone will cost you </gray><bold><dark_gray><PRICE></dark_gray></bold><gray> tokens. Click </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray> to CONFIRM the retrieve of your items.</gray>
+
+# Cost confirmation message before retrieving items via delivery
+retrieve_confirm: <gray>Retrieving the gravestone will cost you </gray><bold><dark_gray><PRICE></dark_gray></bold><gray> tokens. Click </gray><green><click:run_command:'<COMMAND>'>here</click></green><gray> to CONFIRM the retrieval of your items.</gray>
+
+# Confirmation message upon successful delivery
+retrieve_confirmed: <green>Gravestone delivery confirmed! Your items will be delivered to your inventory shortly.</green>
