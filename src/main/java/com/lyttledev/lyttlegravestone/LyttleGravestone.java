@@ -185,6 +185,15 @@ public final class LyttleGravestone extends JavaPlugin {
 
                 // Recheck if the config is fully migrated.
                 migrateConfig();
+            case "3":
+                // Migrate config entries.
+                config.messages.set("retrieve_confirmed", config.defaultMessages.get("retrieve_confirmed"));
+
+                // Update config version.
+                config.general.set("config_version", 4);
+
+                // Recheck if the config is fully migrated.
+                migrateConfig();
             default:
                 break;
         }
