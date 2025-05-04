@@ -7,8 +7,6 @@ plugins {
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
-println("GPR_USER (from .env): ${env.GPR_USER.value}")
-println("GPR_API_KEY (from .env): ${env.GPR_API_KEY.value}")
 
 
 repositories {
@@ -32,7 +30,7 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.org.xerial.sqlite.jdbc)
-    implementation("com.lyttledev:lyttleutils:0.0.1-ALPHA.9")
+    implementation("com.lyttledev:lyttleutils:0.0.1-ALPHA.11")
 }
 
 group = "com.lyttledev"
