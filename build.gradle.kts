@@ -5,6 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
+    id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
 repositories {
@@ -13,12 +14,22 @@ repositories {
     maven { url = uri("https://oss.sonatype.org/content/groups/public/") }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://repo.maven.apache.org/maven2/") }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleUtils")
+        credentials {
+            username = System.getenv("GPR_USER") ?: project.findProperty("gpr.user") as String?
+            password = System.getenv("GPR_API_KEY") ?: project.findProperty("gpr.key") as String?
+        }
+
+    }
 }
 
 dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.org.xerial.sqlite.jdbc)
+    compileOnly("com.lyttledev:lyttleutils:1.0.0")
 }
 
 group = "com.lyttledev"
