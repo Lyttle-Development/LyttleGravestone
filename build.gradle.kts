@@ -8,7 +8,6 @@ plugins {
     id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
-
 repositories {
     mavenLocal()
     maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
