@@ -7,6 +7,9 @@ plugins {
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
+println("GPR_USER (from .env): ${env.GPR_USER.value}")
+println("GPR_API_KEY (from .env): ${env.GPR_API_KEY.value}")
+
 
 repositories {
     mavenLocal()
@@ -18,8 +21,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleUtils")
         credentials {
-            username = System.getenv("GPR_USER") ?: project.findProperty("gpr.user") as String?
-            password = System.getenv("GPR_API_KEY") ?: project.findProperty("gpr.key") as String?
+            username = project.findProperty("GPR_USER") as String? ?: System.getenv("GPR_USER") ?: env.GPR_USER.value
+            password = project.findProperty("GPR_API_KEY") as String? ?: System.getenv("GPR_API_KEY") ?: env.GPR_API_KEY.value
         }
 
     }
@@ -29,7 +32,7 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.org.xerial.sqlite.jdbc)
-    compileOnly("com.lyttledev:lyttleutils:1.0.0")
+    implementation("com.lyttledev:lyttleutils:0.0.1-ALPHA.9")
 }
 
 group = "com.lyttledev"

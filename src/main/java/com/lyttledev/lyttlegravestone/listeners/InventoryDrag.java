@@ -1,7 +1,7 @@
 package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
-import com.lyttledev.lyttlegravestone.utils.Memory;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +26,7 @@ public class InventoryDrag implements Listener {
         if (inventorySize != 54) { return; }
 
         Player player = (Player) event.getWhoClicked();
-        Location location = Memory.getGravestoneLocation(player);
+        Location location = GravestoneManager.getGravestoneLocation(player);
         if (location == null) { return; }
 
         ItemStack draggedItem = event.getOldCursor();

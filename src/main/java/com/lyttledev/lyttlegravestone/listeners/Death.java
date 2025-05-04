@@ -2,9 +2,9 @@ package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.utils.LocationChecker;
-import com.lyttledev.lyttlegravestone.utils.Memory;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.location.CheckLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -63,7 +62,7 @@ public class Death implements Listener {
 
         // Check if the location is safe!
         Location playerLocation = player.getLocation();
-        LocationChecker.getSafe(playerLocation);
+        CheckLocation.getSafe(playerLocation);
 
         // Spawn the tombstone
         Block block = playerLocation.getBlock();
@@ -77,7 +76,7 @@ public class Death implements Listener {
 
         try {
             GravestoneDatabase.addGravestone(location, player, gravestoneInventory);
-            Memory.addGravestone(location);
+            GravestoneManager.addGravestone(location);
             String world = location.getWorld().getName();
             int x = location.getBlockX();
             int y = location.getBlockY();

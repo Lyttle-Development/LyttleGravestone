@@ -5,8 +5,8 @@ import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.listeners.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
-import com.lyttledev.lyttlegravestone.utils.Console;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Console;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import io.papermc.paper.command.brigadier.Commands;
@@ -45,7 +45,7 @@ public final class LyttleGravestone extends JavaPlugin {
         }
 
         // Plugin startup logic
-        Message.init(this);
+        Message.init(this, config.messages);
         Console.init(this);
 
         // Register the listeners

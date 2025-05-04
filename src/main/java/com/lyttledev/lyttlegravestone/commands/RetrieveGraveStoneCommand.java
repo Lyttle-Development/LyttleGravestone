@@ -2,9 +2,9 @@ package com.lyttledev.lyttlegravestone.commands;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.utils.ItemSerializer;
-import com.lyttledev.lyttlegravestone.utils.Memory;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -22,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -88,8 +87,8 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             UUID uuid = player.getUniqueId();
             Location location = entity.getLocation();
 
-            if (Memory.checkDelivery(uuid)) { return 0; }
-            Memory.addDelivery(uuid);
+            if (GravestoneManager.checkDelivery(uuid)) { return 0; }
+            GravestoneManager.addDelivery(uuid);
 
             String world = context.getArgument("world", String.class);
             String x = context.getArgument("x", String.class);
@@ -121,7 +120,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             // UUID and player related logic
             String graveOwnerString = values[0];
             if (graveOwnerString == null || graveOwnerString.isEmpty()) {
-                Memory.removeDelivery(uuid);
+                GravestoneManager.removeDelivery(uuid);
                 return 0;
             }
 
@@ -156,7 +155,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
                 String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
                 Message.sendMessage(player, "not_enough_money", replacements);
-                Memory.removeDelivery(uuid);
+                GravestoneManager.removeDelivery(uuid);
                 return 0;
             }
 
@@ -168,7 +167,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                         {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost}
                 };
 
-                Memory.removeDelivery(uuid);
+                GravestoneManager.removeDelivery(uuid);
                 Message.sendMessage(player, "retrieve_confirm", replacements);
                 return 0;
             }
@@ -181,7 +180,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             if (usesVault && price != cost) {
                 Message.sendMessage(player,"retrieve_price_changed");
-                Memory.removeDelivery(uuid);
+                GravestoneManager.removeDelivery(uuid);
                 return 0;
             }
 
@@ -233,8 +232,8 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             try {
                 GravestoneDatabase.deleteGravestone(gravestoneLocation);
-                Memory.deleteGravestone(gravestoneLocation);
-                Memory.removeDelivery(uuid);
+                GravestoneManager.deleteGravestone(gravestoneLocation);
+                GravestoneManager.removeDelivery(uuid);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

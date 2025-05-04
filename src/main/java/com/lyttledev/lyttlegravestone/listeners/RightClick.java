@@ -2,9 +2,9 @@ package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.utils.ItemSerializer;
-import com.lyttledev.lyttlegravestone.utils.Memory;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,7 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static com.lyttledev.lyttlegravestone.utils.DisplayName.getDisplayName;
+import static com.lyttledev.lyttleutils.utils.entity.Player.getDisplayName;
+
 
 public class RightClick implements Listener {
 
@@ -43,7 +44,7 @@ public class RightClick implements Listener {
 
         if (!block.getType().equals(Material.MOSSY_STONE_BRICK_STAIRS)) { return; }
 
-        if (!Memory.getGravestone(location)) { return; }
+        if (!GravestoneManager.getGravestone(location)) { return; }
 
         try {
             String[] values = GravestoneDatabase.getGravestone(location);
@@ -65,9 +66,9 @@ public class RightClick implements Listener {
             String DatabaseInventory = values[1];
             inventory = ItemSerializer.deserializeInventory(DatabaseInventory, 0);
 
-            if (Memory.checkForGravestone(location)) { return; }
+            if (GravestoneManager.checkForGravestone(location)) { return; }
 
-            Memory.openGravestone(player, location);
+            GravestoneManager.openGravestone(player, location);
             openGui(player, inventory, graveOwnerName);
 
         } catch (SQLException exception) {

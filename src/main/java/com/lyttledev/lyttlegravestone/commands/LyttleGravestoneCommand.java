@@ -1,7 +1,7 @@
 package com.lyttledev.lyttlegravestone.commands;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

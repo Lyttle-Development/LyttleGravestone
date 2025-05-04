@@ -2,9 +2,9 @@ package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.utils.ItemSerializer;
-import com.lyttledev.lyttlegravestone.utils.Memory;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import static com.lyttledev.lyttlegravestone.utils.DisplayName.getDisplayName;
+import static com.lyttledev.lyttleutils.utils.entity.Player.getDisplayName;
+
 
 public class BreakBlock implements Listener {
 
@@ -37,7 +38,7 @@ public class BreakBlock implements Listener {
         Location location = block.getLocation();
         Player player = event.getPlayer();
 
-        if (block.getType() == Material.MOSSY_STONE_BRICK_STAIRS && Memory.getGravestone(location)) {
+        if (block.getType() == Material.MOSSY_STONE_BRICK_STAIRS && GravestoneManager.getGravestone(location)) {
             try {
                 String[] values = GravestoneDatabase.getGravestone(location);
                 UUID graveOwnerUUID = UUID.fromString(values[0]);
@@ -75,7 +76,7 @@ public class BreakBlock implements Listener {
         Iterator<Block> iterator = blocks.iterator();
         while (iterator.hasNext()) {
             Block block = iterator.next();
-            if (block.getType() == Material.MOSSY_STONE_BRICK_STAIRS && Memory.getGravestone(block.getLocation())) {
+            if (block.getType() == Material.MOSSY_STONE_BRICK_STAIRS && GravestoneManager.getGravestone(block.getLocation())) {
                 iterator.remove(); // Prevent explosion from breaking it
             }
         }
@@ -97,7 +98,7 @@ public class BreakBlock implements Listener {
 
         try {
             GravestoneDatabase.deleteGravestone(location);
-            Memory.deleteGravestone(location);
+            GravestoneManager.deleteGravestone(location);
         } catch (SQLException exception) {
             exception.printStackTrace();
             System.out.println("Failed to delete gravestone from database: " + exception.getMessage());
