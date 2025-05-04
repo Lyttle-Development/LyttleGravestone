@@ -3,7 +3,6 @@ package com.lyttledev.lyttlegravestone.commands;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -113,7 +112,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             if (values == null) {
                 String[][] replacements = {{"<COORDINATES>", x + " " + y + " " + z}};
-                Message.sendMessage(player, "no_gravestone_found", replacements);
+                plugin.message.sendMessage(player, "no_gravestone_found", replacements);
                 return 0;
             }
 
@@ -128,7 +127,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // Permission logic
             if (player != graveOwnerPlayer && !player.hasPermission("lyttlegravestone.staff")) {
-                Message.sendMessage(player, "no_permission");
+                plugin.message.sendMessage(player, "no_permission");
                 return 0;
             }
 
@@ -154,7 +153,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             // Check if the player has enough money
             if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
                 String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
-                Message.sendMessage(player, "not_enough_money", replacements);
+                plugin.message.sendMessage(player, "not_enough_money", replacements);
                 GravestoneManager.removeDelivery(uuid);
                 return 0;
             }
@@ -168,7 +167,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 };
 
                 GravestoneManager.removeDelivery(uuid);
-                Message.sendMessage(player, "retrieve_confirm", replacements);
+                plugin.message.sendMessage(player, "retrieve_confirm", replacements);
                 return 0;
             }
 
@@ -179,13 +178,13 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             } catch (IllegalArgumentException ignored) {}
 
             if (usesVault && price != cost) {
-                Message.sendMessage(player,"retrieve_price_changed");
+                plugin.message.sendMessage(player,"retrieve_price_changed");
                 GravestoneManager.removeDelivery(uuid);
                 return 0;
             }
 
             // Send delivery message
-            Message.sendMessage(player,"retrieve_confirmed");
+            plugin.message.sendMessage(player,"retrieve_confirmed");
 
             // Inventory logic
             String DatabaseInventory = values[1];

@@ -3,7 +3,6 @@ package com.lyttledev.lyttlegravestone.listeners;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.lyttledev.lyttleutils.utils.location.CheckLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -93,7 +92,7 @@ public class Death implements Listener {
                         {"<Z>", String.valueOf(z)},
                         {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
                 };
-                Message.sendMessage(player, "death_message", replacements);
+                plugin.message.sendMessage(player, "death_message", replacements);
             } else {
                 String[][] replacements = {
                         {"<WORLD>", world},
@@ -101,7 +100,7 @@ public class Death implements Listener {
                         {"<Y>", String.valueOf(y)},
                         {"<Z>", String.valueOf(z)},
                 };
-                Message.sendMessage(player, "death_message_no_delivery", replacements);
+                plugin.message.sendMessage(player, "death_message_no_delivery", replacements);
             }
 
         } catch (SQLException exception) {

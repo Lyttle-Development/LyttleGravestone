@@ -3,7 +3,6 @@ package com.lyttledev.lyttlegravestone.listeners;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -26,8 +25,10 @@ import static com.lyttledev.lyttleutils.utils.entity.Player.getDisplayName;
 
 
 public class RightClick implements Listener {
+    private final LyttleGravestone plugin;
 
     public RightClick(LyttleGravestone plugin) {
+        this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -58,7 +59,7 @@ public class RightClick implements Listener {
             // Permission logic
             if (player != graveOwnerPlayer && !player.hasPermission("lyttlegravestone.Staff")) {
                 String[][] replacements = {{"<PLAYER>", graveOwnerName}};
-                Message.sendMessage(player, "wrong_player", replacements);
+                plugin.message.sendMessage(player, "wrong_player", replacements);
                 return;
             }
 

@@ -24,6 +24,8 @@ public final class LyttleGravestone extends JavaPlugin {
     private GravestoneDatabase gravestoneDatabase;
     private Economy economy;
     public Configs config;
+    public Console console;
+    public Message message;
 
     @Override
     public void onEnable() {
@@ -45,8 +47,8 @@ public final class LyttleGravestone extends JavaPlugin {
         }
 
         // Plugin startup logic
-        Message.init(this, config.messages);
-        Console.init(this);
+        this.console = new Console(this);
+        this.message = new Message(this, config.messages);
 
         // Register the listeners
         new Death(this);

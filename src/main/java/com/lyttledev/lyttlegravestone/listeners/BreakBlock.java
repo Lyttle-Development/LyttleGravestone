@@ -3,7 +3,6 @@ package com.lyttledev.lyttlegravestone.listeners;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
-import com.lyttledev.lyttleutils.utils.communication.Message;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,8 +26,10 @@ import static com.lyttledev.lyttleutils.utils.entity.Player.getDisplayName;
 
 
 public class BreakBlock implements Listener {
+    private final LyttleGravestone plugin;
 
     public BreakBlock(LyttleGravestone plugin) {
+        this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -48,7 +49,7 @@ public class BreakBlock implements Listener {
 
                 if (!graveOwnerUUID.equals(player.getUniqueId()) && !player.hasPermission("lyttlegravestone.Staff")) {
                     String[][] replacements = {{"<PLAYER>", graveOwnerName}};
-                    Message.sendMessage(player, "wrong_player", replacements);
+                    plugin.message.sendMessage(player, "wrong_player", replacements);
                     event.setCancelled(true);
                     return;
                 }
