@@ -1,6 +1,7 @@
 package com.lyttledev.lyttlegravestone.types;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
+import com.lyttledev.lyttleutils.types.Config;
 
 public class Configs {
     private final LyttleGravestone plugin;

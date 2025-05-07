@@ -5,8 +5,8 @@ import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.listeners.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
-import com.lyttledev.lyttlegravestone.utils.Console;
-import com.lyttledev.lyttlegravestone.utils.Message;
+import com.lyttledev.lyttleutils.utils.communication.Console;
+import com.lyttledev.lyttleutils.utils.communication.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import io.papermc.paper.command.brigadier.Commands;
@@ -24,6 +24,8 @@ public final class LyttleGravestone extends JavaPlugin {
     private GravestoneDatabase gravestoneDatabase;
     private Economy economy;
     public Configs config;
+    public Console console;
+    public Message message;
 
     @Override
     public void onEnable() {
@@ -45,8 +47,8 @@ public final class LyttleGravestone extends JavaPlugin {
         }
 
         // Plugin startup logic
-        Message.init(this);
-        Console.init(this);
+        this.console = new Console(this);
+        this.message = new Message(this, config.messages);
 
         // Register the listeners
         new Death(this);

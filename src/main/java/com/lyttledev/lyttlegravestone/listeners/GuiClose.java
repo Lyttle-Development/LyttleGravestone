@@ -2,7 +2,7 @@ package com.lyttledev.lyttlegravestone.listeners;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.utils.Memory;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,8 +53,8 @@ public class GuiClose implements Listener {
 
 
         Player player = (Player) event.getPlayer();
-        Location location = Memory.getGravestoneLocation(player);
-        Memory.closeGravestone(player, location);
+        Location location = GravestoneManager.getGravestoneLocation(player);
+        GravestoneManager.closeGravestone(player, location);
 
         if (location == null) { return; }
 
@@ -71,7 +71,7 @@ public class GuiClose implements Listener {
             try {
                 GravestoneDatabase.deleteGravestone(location);
                 location.getBlock().setType(Material.AIR);
-                Memory.deleteGravestone(location);
+                GravestoneManager.deleteGravestone(location);
             } catch (SQLException exception) {
                 exception.printStackTrace();
                 System.out.println("Failed to delete the database entry! " + exception.getMessage());

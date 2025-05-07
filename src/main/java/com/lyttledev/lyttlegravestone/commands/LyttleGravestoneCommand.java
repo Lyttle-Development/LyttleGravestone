@@ -1,7 +1,6 @@
 package com.lyttledev.lyttlegravestone.commands;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
-import com.lyttledev.lyttlegravestone.utils.Message;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -43,7 +42,7 @@ public class LyttleGravestoneCommand implements Command<CommandSourceStack> {
 
         // Execute reload subcommand
         plugin.config.reload();
-        Message.sendMessageRaw(sender, "The config has been reloaded");
+        plugin.message.sendMessageRaw(sender, "The config has been reloaded");
 
         return Command.SINGLE_SUCCESS;
     }
