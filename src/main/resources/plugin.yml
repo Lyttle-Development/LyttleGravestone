@@ -1,9 +1,13 @@
 name: LyttleGravestone
+description: Die in honor, and leave a gravestone behind!
 version: '${projectVersion}'
 main: com.lyttledev.lyttlegravestone.LyttleGravestone
 api-version: '1.21'
 authors:
+  - LyttleDevelopment
   - ThatsATim
   - Stualyttle
 
-softdepend: [Vault, LyttleScoreboardEconomy]
+softdepend:
+  - Vault
+  - LyttleScoreboardEconomy
