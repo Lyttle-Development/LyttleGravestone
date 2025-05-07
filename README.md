@@ -5,8 +5,8 @@ LyttleGravestone is a simple plugin that adds gravestones to Minecraft. When a p
 ## Features
 
 - **Gravestones**: When a player dies, a gravestone is placed at their death location containing their items.
-- **Item Retrieval**: Players can break their gravestone to retrieve their items.
-- **Protection**: Gravestones are protected from other players breaking them.
+- **Item Retrieval**: Players can break or open their gravestone to retrieve their items.
+- **Protection**: Gravestones are protected from other players breaking or opening them.
 - **Command retrieval**: Players can use a command to retrieve their items if they are unable to break the gravestone.
 
 ## Commands
