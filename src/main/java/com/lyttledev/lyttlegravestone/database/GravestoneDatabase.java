@@ -1,9 +1,9 @@
 package com.lyttledev.lyttlegravestone.database;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
-import com.lyttledev.lyttlegravestone.utils.ItemSerializer;
-import com.lyttledev.lyttlegravestone.utils.Memory;
+import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import com.lyttledev.lyttlegravestone.utils.StringLocationConvertor;
+import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -90,7 +90,7 @@ public class GravestoneDatabase {
             while (resultSet.next()) {
                 String locationString = resultSet.getString("location");
                 Location location = StringLocationConvertor.stringToLocation(locationString);
-                Memory.addGravestone(location);
+                GravestoneManager.addGravestone(location);
             }
         }
     }
