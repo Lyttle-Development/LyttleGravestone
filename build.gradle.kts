@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.papermc.hangarpublishplugin.model.Platforms
 import java.io.ByteArrayOutputStream
 
@@ -6,6 +7,7 @@ plugins {
     `maven-publish`
     id("io.papermc.hangar-publish-plugin") version "0.1.2"
     id("co.uzzu.dotenv.gradle") version "4.0.0"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 repositories {
@@ -36,6 +38,23 @@ group = "com.lyttledev"
 version = (property("pluginVersion") as String)
 description = "LyttleGravestone"
 java.sourceCompatibility = JavaVersion.VERSION_21
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set("")
+    configurations = listOf(project.configurations.runtimeClasspath.get())
+
+    dependencies {
+        include(dependency("com.lyttledev:lyttleutils"))
+    }
+}
+
+tasks.named<Jar>("jar") {
+    enabled = false // Disable regular jar to prevent accidental use
+}
+
+tasks.named("build") {
+    dependsOn("shadowJar")
+}
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -152,7 +171,7 @@ hangarPublish {
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
             register(Platforms.PAPER) {
-                jar.set(tasks.jar.flatMap { it.archiveFile })
+                jar.set(tasks.named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
 
                 // Get platform versions from gradle.properties file
                 val versions: kotlin.collections.List<kotlin.String> = (property("paperVersion") as kotlin.String)
