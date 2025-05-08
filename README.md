@@ -78,10 +78,13 @@
 
 ### 📝 Configuration Files
 #### 🔧 `config.yml`
-```
-yaml
+```yaml
 # Retrieve Command Settings
-retrieve_command_active: true retrieve_command_blocks: 100 retrieve_command_price: 3 retrieve_command_price__other_world: 100
+retrieve_command_active: true 
+retrieve_command_blocks: 100 
+retrieve_command_price: 3 
+retrieve_command_price__other_world: 100
+
 # Economy Integration
 use_vault: true
 ``` 
