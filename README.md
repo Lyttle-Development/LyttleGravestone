@@ -1,6 +1,6 @@
 <div align="center">
   
-# LyttleGravestone
+# Lyttle Gravestone
 
 [![Paper](https://img.shields.io/badge/Paper-1.21.x-blue)](https://papermc.io)
 [![Hangar](https://img.shields.io/badge/Hangar-download-success)](https://hangar.papermc.io/Lyttle-Development)
