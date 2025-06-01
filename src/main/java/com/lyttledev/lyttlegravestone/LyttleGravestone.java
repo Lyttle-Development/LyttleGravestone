@@ -7,6 +7,7 @@ import com.lyttledev.lyttlegravestone.listeners.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
 import com.lyttledev.lyttleutils.utils.communication.Console;
 import com.lyttledev.lyttleutils.utils.communication.Message;
+import com.lyttledev.lyttleutils.utils.storage.GlobalConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import io.papermc.paper.command.brigadier.Commands;
@@ -26,12 +27,14 @@ public final class LyttleGravestone extends JavaPlugin {
     public Configs config;
     public Console console;
     public Message message;
+    public GlobalConfig global;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         // Setup config after creating the configs
-        config = new Configs(this);
+        this.config = new Configs(this);
+        this.global = new GlobalConfig(this);
         // Migrate config
         migrateConfig();
 
@@ -48,7 +51,7 @@ public final class LyttleGravestone extends JavaPlugin {
 
         // Plugin startup logic
         this.console = new Console(this);
-        this.message = new Message(this, config.messages);
+        this.message = new Message(this, config.messages, global);
 
         // Register the listeners
         new Death(this);
