@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class LyttleGravestoneCommand implements Command<CommandSourceStack> {
 
         // Execute reload subcommand
         plugin.config.reload();
-        plugin.message.sendMessageRaw(sender, "The config has been reloaded");
+        plugin.message.sendMessageRaw(sender, Component.text("The config has been reloaded"));
 
         return Command.SINGLE_SUCCESS;
     }

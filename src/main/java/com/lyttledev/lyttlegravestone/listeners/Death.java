@@ -3,6 +3,7 @@ package com.lyttledev.lyttlegravestone.listeners;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import com.lyttledev.lyttleutils.utils.location.CheckLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -85,21 +86,23 @@ public class Death implements Listener {
             Boolean command = (Boolean) plugin.config.general.get("retrieve_command_active");
 
             if (command) {
-                String[][] replacements = {
-                        {"<WORLD>", world},
-                        {"<X>", String.valueOf(x)},
-                        {"<Y>", String.valueOf(y)},
-                        {"<Z>", String.valueOf(z)},
-                        {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z}
-                };
+                Replacements replacements = new Replacements.Builder()
+                    .add("<WORLD>", world)
+                    .add("<X>", String.valueOf(x))
+                    .add("<Y>", String.valueOf(y))
+                    .add("<Z>", String.valueOf(z))
+                    .add("<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z)
+                    .build();
+
                 plugin.message.sendMessage(player, "death_message", replacements);
             } else {
-                String[][] replacements = {
-                        {"<WORLD>", world},
-                        {"<X>", String.valueOf(x)},
-                        {"<Y>", String.valueOf(y)},
-                        {"<Z>", String.valueOf(z)},
-                };
+                Replacements replacements = new Replacements.Builder()
+                        .add("<WORLD>", world)
+                        .add("<X>", String.valueOf(x))
+                        .add("<Y>", String.valueOf(y))
+                        .add("<Z>", String.valueOf(z))
+                        .build();
+
                 plugin.message.sendMessage(player, "death_message_no_delivery", replacements);
             }
 
