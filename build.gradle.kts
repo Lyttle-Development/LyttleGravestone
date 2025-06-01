@@ -30,7 +30,7 @@ dependencies {
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.org.xerial.sqlite.jdbc)
-    implementation("com.lyttledev:lyttleutils:1.0.1")
+    implementation("com.lyttledev:lyttleutils:1.1.1")
 }
 
 group = "com.lyttledev"

@@ -3,6 +3,7 @@ package com.lyttledev.lyttlegravestone.commands;
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
+import com.lyttledev.lyttleutils.types.Message.Replacements;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -111,7 +112,10 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             }
 
             if (values == null) {
-                String[][] replacements = {{"<COORDINATES>", x + " " + y + " " + z}};
+                Replacements replacements = new Replacements.Builder()
+                    .add("<COORDINATES>", x + " " + y + " " + z)
+                    .build();
+
                 plugin.message.sendMessage(player, "no_gravestone_found", replacements);
                 return 0;
             }
@@ -152,7 +156,10 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
 
             // Check if the player has enough money
             if (usesVault && (economy != null && economy.getBalance(player) < cost || economy == null)) {
-                String[][] replacements = {{"<PRICE>", String.valueOf(cost)}};
+                Replacements replacements = new Replacements.Builder()
+                        .add("<PRICE>", String.valueOf(cost))
+                        .build();
+
                 plugin.message.sendMessage(player, "not_enough_money", replacements);
                 GravestoneManager.removeDelivery(uuid);
                 return 0;
@@ -161,10 +168,10 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
             // Check if the player has not confirmed the retrieval
             // TODO, put this thing in a config
             if (usesVault && !confirm) {
-                String[][] replacements = {
-                        {"<PRICE>", String.valueOf(cost)},
-                        {"<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost}
-                };
+                Replacements replacements = new Replacements.Builder()
+                        .add("<PRICE>", String.valueOf(cost))
+                        .add("<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost)
+                        .build();
 
                 GravestoneManager.removeDelivery(uuid);
                 plugin.message.sendMessage(player, "retrieve_confirm", replacements);
