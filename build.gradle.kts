@@ -59,30 +59,6 @@ tasks.named("build") {
     dependsOn("shadowJar", "copyContents")
 }
 
-// --- Publishing configuration for Maven (GitHub Packages with ShadowJar) ---
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(tasks.named<ShadowJar>("shadowJar").get()) {
-                classifier = null // main artifact
-            }
-            groupId = project.group.toString()
-            artifactId = "lyttlegravestone"
-            version = (property("pluginVersion") as String)
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleGravestone")
-            credentials {
-                username = project.findProperty("GPR_USER") as String? ?: System.getenv("GPR_USER")
-                password = project.findProperty("GPR_API_KEY") as String? ?: System.getenv("GPR_API_KEY")
-            }
-        }
-    }
-}
-
 // --- Encoding setup for Java and Javadoc ---
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
@@ -140,14 +116,38 @@ val runNumber: String? = System.getenv("GITHUB_RUN_NUMBER")
 
 val versionString: String = when (envChannel) {
     "Release" -> version.toString()
-    "Snapshot" -> if (runNumber != null) "${version}-SNAPSHOT+$runNumber" else "${version}-SNAPSHOT"
-    else -> if (runNumber != null) "${version}-${envChannel.uppercase()}+$runNumber" else "$version-${envChannel.uppercase()}"
+    "Beta" -> if (runNumber != null) "${version}-SNAPSHOT.$runNumber" else "${version}-SNAPSHOT"
+    else -> if (runNumber != null) "${version}-${envChannel.uppercase()}.$runNumber" else "$version-${envChannel.uppercase()}"
 }
 
 // --- Version expansion in plugin.yml ---
 tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") {
         expand("projectVersion" to versionString)
+    }
+}
+
+// --- Publishing configuration for Maven (GitHub Packages with ShadowJar) ---
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks.named<ShadowJar>("shadowJar").get()) {
+                classifier = null // main artifact
+            }
+            groupId = project.group.toString()
+            artifactId = "lyttlegravestone"
+            version = versionString
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Lyttle-Development/LyttleGravestone")
+            credentials {
+                username = System.getenv("GPR_USER") ?: project.findProperty("gpr.user") as String?
+                password = System.getenv("GPR_API_KEY") ?: project.findProperty("gpr.key") as String?
+            }
+        }
     }
 }
 
@@ -178,7 +178,7 @@ hangarPublish {
 
 // --- Modrinth Publish Configuration ---
 modrinth {
-    token.set(System.getenv("MODRINTH_API_TOKEN")) // Token from workflow secrets
+    token.set(System.getenv("MODRINTH_API_TOKEN"))
     projectId.set("lyttlegravestone") // Replace with your Modrinth project slug/ID
     versionNumber.set(versionString)
     changelog.set(changelogContent)
