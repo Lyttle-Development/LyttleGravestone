@@ -1,9 +1,10 @@
 package com.lyttledev.lyttlegravestone;
 
+import com.lyttledev.lyttlegravestone.commands.GravestoneListCommand;
 import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.listeners.*;
+import com.lyttledev.lyttlegravestone.handlers.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
 import com.lyttledev.lyttleutils.utils.communication.Console;
 import com.lyttledev.lyttleutils.utils.communication.Message;
@@ -24,6 +25,7 @@ import java.sql.SQLException;
 public final class LyttleGravestone extends JavaPlugin {
     private GravestoneDatabase gravestoneDatabase;
     private Economy economy;
+    public ListHandler listHandler;
     public Configs config;
     public Console console;
     public Message message;
@@ -53,13 +55,14 @@ public final class LyttleGravestone extends JavaPlugin {
         this.console = new Console(this);
         this.message = new Message(this, config.messages, global);
 
-        // Register the listeners
+        // Register the handlers
         new Death(this);
         new RightClick(this);
         new BreakBlock(this);
         new GuiClose(this);
         new InventoryClick(this);
         new InventoryDrag(this);
+        this.listHandler = new ListHandler(this);
 
         // Register the commands
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
@@ -102,6 +105,7 @@ public final class LyttleGravestone extends JavaPlugin {
         }
         // Lyttle gravestone command
         LyttleGravestoneCommand.register(this, commands);
+        GravestoneListCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {

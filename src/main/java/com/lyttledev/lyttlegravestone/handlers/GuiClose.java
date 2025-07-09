@@ -1,4 +1,4 @@
-package com.lyttledev.lyttlegravestone.listeners;
+package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;

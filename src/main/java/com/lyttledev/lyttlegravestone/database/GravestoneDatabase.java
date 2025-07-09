@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class GravestoneDatabase {
     private static Connection connection;
@@ -59,6 +62,7 @@ public class GravestoneDatabase {
         }
     }
 
+    // Get a specific gravestone from the database
     public static String[] getGravestone(Location location) throws SQLException {
         String locationString = StringLocationConvertor.locationToString(location);
 
@@ -66,6 +70,32 @@ public class GravestoneDatabase {
             preparedStatement.setString(1, locationString);
             ResultSet resultSet = preparedStatement.executeQuery();
             return new String[]{resultSet.getString("uuid"), resultSet.getString("inventoryContents")};
+        }
+    }
+
+    // Get all gravestones from the database
+    public static List<String[]> getGravestones() throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM graves")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<String[]> list = new ArrayList<>();
+            while (resultSet.next()) {
+                list.add(new String[]{resultSet.getString("uuid"), resultSet.getString("location")});
+            }
+            return list;
+        }
+    }
+
+    // Get all gravestones that belong to a specific player from the database
+    public static List<String[]> getGravestones(Player player) throws SQLException {
+        UUID uuid = player.getUniqueId();
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM graves WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<String[]> list = new ArrayList<>();
+            while (resultSet.next()) {
+                list.add(new String[]{resultSet.getString("uuid"), resultSet.getString("location")});
+            }
+            return list;
         }
     }
 
