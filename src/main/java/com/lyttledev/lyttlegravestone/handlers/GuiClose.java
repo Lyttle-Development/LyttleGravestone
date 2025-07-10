@@ -2,7 +2,7 @@ package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.inventories.GravestoneInventory;
+import com.lyttledev.lyttlegravestone.types.GravestoneInventory;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

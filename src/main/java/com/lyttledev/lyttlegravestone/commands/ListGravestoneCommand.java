@@ -3,7 +3,7 @@ package com.lyttledev.lyttlegravestone.commands;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.inventories.GravestoneListInventory;
+import com.lyttledev.lyttlegravestone.types.GravestoneListInventory;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

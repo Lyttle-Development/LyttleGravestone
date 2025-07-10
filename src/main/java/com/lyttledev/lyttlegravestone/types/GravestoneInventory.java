@@ -1,4 +1,4 @@
-package com.lyttledev.lyttlegravestone.inventories;
+package com.lyttledev.lyttlegravestone.types;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import org.bukkit.inventory.Inventory;
