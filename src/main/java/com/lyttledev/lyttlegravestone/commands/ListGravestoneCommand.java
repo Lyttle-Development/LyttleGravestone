@@ -3,36 +3,36 @@ package com.lyttledev.lyttlegravestone.commands;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneListInventory;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GravestoneListCommand implements Command<CommandSourceStack> {
+public class ListGravestoneCommand implements Command<CommandSourceStack> {
     private static LyttleGravestone plugin;
 
     public static void register(LyttleGravestone pl, Commands commands) {
         plugin = pl;
-
         LiteralArgumentBuilder<CommandSourceStack> commandBuilder =
-                Commands.literal("gravestonelist")
+                Commands.literal("listgravestones")
                         .requires(src -> {
                             CommandSender sender = src.getSender();
                             return sender.hasPermission("lyttlegravestone.gravestonelist");
-                        }).executes(new GravestoneListCommand());
+                        }).executes(new ListGravestoneCommand());
 
         commands.register(
                 commandBuilder.build(),
                 "List the players gravestones",
-                List.of("gl", "gravestonelist")
+                List.of("lg")
         );
     }
 
@@ -59,9 +59,9 @@ public class GravestoneListCommand implements Command<CommandSourceStack> {
 
             }
 
-            plugin.message.sendMessageRaw(player, Component.text(gravesStones.toString()));
-
-            plugin.listHandler.openGui(player, locations);
+            GravestoneListInventory gravestoneListInventory = new GravestoneListInventory(plugin, player.getName(), locations);
+            Inventory inventory = gravestoneListInventory.getInventory();
+            player.openInventory(inventory);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

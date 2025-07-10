@@ -62,7 +62,7 @@ public class BreakBlock implements Listener {
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Failed to handle gravestone destruction: " + e.getMessage());
+                plugin.getLogger().severe("Failed to handle gravestone destruction: " + e.getMessage());
             }
         }
     }
@@ -106,7 +106,7 @@ public class BreakBlock implements Listener {
             GravestoneManager.deleteGravestone(location);
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to delete gravestone from database: " + exception.getMessage());
+            plugin.getLogger().severe("Failed to delete gravestone from database: " + exception.getMessage());
         }
     }
 }

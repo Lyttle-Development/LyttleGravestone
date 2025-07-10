@@ -1,8 +1,9 @@
 package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneInventory;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneListInventory;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryDrag implements Listener {
@@ -22,18 +24,17 @@ public class InventoryDrag implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        String title = event.getView().title().toString();
-
         Player player = (Player) event.getWhoClicked();
-        plugin.message.sendMessageRaw(player, Component.text(title));
 
-        if (!title.contains("'s gravestone") && !title.contains("'s list of gravestones")) { return; }
+        Inventory inventory = event.getInventory();
+        if (!(inventory.getHolder(false) instanceof GravestoneInventory)
+                && !(inventory.getHolder(false) instanceof GravestoneListInventory) ) { return; }
 
         int inventorySize = event.getInventory().getSize();
         if (inventorySize != 54) { return; }
 
         Location location = GravestoneManager.getGravestoneLocation(player);
-        if (location == null && !title.contains("'s list of gravestones")) { return; }
+        if (location == null && !(inventory.getHolder(false) instanceof GravestoneListInventory)) { return; }
 
         ItemStack draggedItem = event.getOldCursor();
         if (draggedItem.getType() == Material.AIR) { return; }
@@ -45,5 +46,4 @@ public class InventoryDrag implements Listener {
             }
         }
     }
-
 }

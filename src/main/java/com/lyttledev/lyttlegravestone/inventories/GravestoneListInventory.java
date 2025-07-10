@@ -1,29 +1,25 @@
-package com.lyttledev.lyttlegravestone.handlers;
+package com.lyttledev.lyttlegravestone.inventories;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListHandler implements Listener {
-    private final LyttleGravestone plugin;
+public class GravestoneListInventory implements InventoryHolder {
+    private Inventory inventory;
 
-    public ListHandler(LyttleGravestone plugin) {
-        this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public GravestoneListInventory(LyttleGravestone plugin, String playerName, List<String> locations) {
+        this.inventory = plugin.getServer().createInventory(this, 54, playerName + "'s list of gravestones");
+        setInventory(locations);
     }
 
-    public void openGui(Player player, List<String> locations) {
-        Inventory gravestones = Bukkit.createInventory(player, 54, Component.text(player.getName() + "'s list of gravestones"));
-
+    private void setInventory(List<String> locations) {
         for (String location : locations) {
             String[] data = location.split(",");
 
@@ -52,10 +48,13 @@ public class ListHandler implements Listener {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("X:" + data[1] + " Y:" + data[2] + " Z:"  + data[3]));
             item.lore(lore);
-            gravestones.addItem(item);
+            this.inventory.addItem(item);
         }
+    }
 
-        player.openInventory(gravestones);
+    @Override
+    public Inventory getInventory() {
+        return this.inventory;
     }
 
 }

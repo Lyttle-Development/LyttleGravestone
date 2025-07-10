@@ -1,6 +1,8 @@
 package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneInventory;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneListInventory;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,10 +24,11 @@ public class InventoryClick implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        String title = event.getView().title().toString();
         Player player = (Player) event.getWhoClicked();
 
-        if (!title.contains("'s gravestone") && !title.contains("'s list of gravestones")) { return; }
+        Inventory inventory = event.getInventory();
+        if (!(inventory.getHolder(false) instanceof GravestoneInventory)
+                && !(inventory.getHolder(false) instanceof GravestoneListInventory) ) { return; }
 
         Inventory clickedInventory = event.getClickedInventory();
         Inventory playerInventory = event.getWhoClicked().getInventory();
@@ -34,9 +37,9 @@ public class InventoryClick implements Listener {
         if (inventorySize != 54) { return; }
 
         Location location = GravestoneManager.getGravestoneLocation(player);
-        if (location == null && !title.contains("'s list of gravestones")) { return; }
+        if (location == null && !(inventory.getHolder(false) instanceof GravestoneListInventory)) { return; }
 
-        if (title.contains("'s list of gravestones")) {
+        if (inventory.getHolder(false) instanceof GravestoneListInventory) {
             event.setCancelled(true);
         }
 

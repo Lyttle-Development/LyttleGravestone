@@ -1,6 +1,6 @@
 package com.lyttledev.lyttlegravestone;
 
-import com.lyttledev.lyttlegravestone.commands.GravestoneListCommand;
+import com.lyttledev.lyttlegravestone.commands.ListGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
@@ -23,13 +23,12 @@ import java.io.File;
 import java.sql.SQLException;
 
 public final class LyttleGravestone extends JavaPlugin {
-    private GravestoneDatabase gravestoneDatabase;
-    private Economy economy;
-    public ListHandler listHandler;
     public Configs config;
     public Console console;
     public Message message;
     public GlobalConfig global;
+    private GravestoneDatabase gravestoneDatabase;
+    private Economy economy;
 
     @Override
     public void onEnable() {
@@ -62,7 +61,6 @@ public final class LyttleGravestone extends JavaPlugin {
         new GuiClose(this);
         new InventoryClick(this);
         new InventoryDrag(this);
-        this.listHandler = new ListHandler(this);
 
         // Register the commands
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
@@ -80,10 +78,9 @@ public final class LyttleGravestone extends JavaPlugin {
             GravestoneDatabase.initGravestonesCache();
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to connect to the database! " + exception.getMessage());
+            this.getLogger().severe("Failed to connect to the database! " + exception.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
     }
 
     @Override
@@ -105,7 +102,7 @@ public final class LyttleGravestone extends JavaPlugin {
         }
         // Lyttle gravestone command
         LyttleGravestoneCommand.register(this, commands);
-        GravestoneListCommand.register(this, commands);
+        ListGravestoneCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {

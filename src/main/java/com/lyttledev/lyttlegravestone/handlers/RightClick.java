@@ -2,6 +2,7 @@ package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
+import com.lyttledev.lyttlegravestone.inventories.GravestoneInventory;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import com.lyttledev.lyttleutils.types.Message.Replacements;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
@@ -74,19 +75,15 @@ public class RightClick implements Listener {
             if (GravestoneManager.checkForGravestone(location)) { return; }
 
             GravestoneManager.openGravestone(player, location);
-            openGui(player, inventory, graveOwnerName);
+            GravestoneInventory gravestoneInventoryClass = new GravestoneInventory(plugin, player.getName());
+            gravestoneInventoryClass.setGravestone(inventory);
+
+            Inventory gravestoneInventory = gravestoneInventoryClass.getInventory();
+            player.openInventory(gravestoneInventory);
 
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to get the database entry! " + exception.getMessage());
+            plugin.getLogger().severe("Failed to get the database entry! " + exception.getMessage());
         }
-
     }
-
-    private void openGui(Player player, ItemStack[] items, String graveOwnerName) {
-        Inventory gravestoneInventory = Bukkit.createInventory(player, 54, Component.text(graveOwnerName + "'s gravestone"));
-        gravestoneInventory.setContents(items);
-        player.openInventory(gravestoneInventory);
-    }
-
 }

@@ -108,7 +108,7 @@ public class Death implements Listener {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to create the database entry! " + exception.getMessage());
+            plugin.getLogger().severe("Failed to create the database entry! " + exception.getMessage());
         }
 
     }
