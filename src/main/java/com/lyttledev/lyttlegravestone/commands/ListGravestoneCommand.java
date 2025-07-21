@@ -1,6 +1,5 @@
 package com.lyttledev.lyttlegravestone.commands;
 
-
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.types.GravestoneListInventory;
@@ -44,19 +43,16 @@ public class ListGravestoneCommand implements Command<CommandSourceStack> {
         Player player = (Player) sender;
 
         try {
+            List<String> locations = new ArrayList<>();
             List<String[]> values = GravestoneDatabase.getGravestones(player);
             
             StringBuilder gravesStones = new StringBuilder();
             gravesStones.append("\n");
 
-            List<String> locations = new ArrayList<>();
-
             for (String[] gravestone : values) {
                 gravesStones.append(gravestone[0]).append("\n");
                 gravesStones.append(gravestone[1]).append("\n");
-
                 locations.add(gravestone[1]);
-
             }
 
             GravestoneListInventory gravestoneListInventory = new GravestoneListInventory(plugin, player.getName(), locations);
@@ -69,5 +65,4 @@ public class ListGravestoneCommand implements Command<CommandSourceStack> {
 
         return Command.SINGLE_SUCCESS;
     }
-
 }
