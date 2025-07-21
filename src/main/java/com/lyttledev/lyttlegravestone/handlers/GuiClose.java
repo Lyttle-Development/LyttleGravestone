@@ -1,7 +1,8 @@
-package com.lyttledev.lyttlegravestone.listeners;
+package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
+import com.lyttledev.lyttlegravestone.types.GravestoneInventory;
 import com.lyttledev.lyttlegravestone.utils.GravestoneManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,20 +11,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 
 public class GuiClose implements Listener {
+    private LyttleGravestone plugin;
 
     public GuiClose(LyttleGravestone plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        this.plugin = plugin;
     }
 
     @EventHandler
     public void onGuiClose(InventoryCloseEvent event) {
-        String title = event.getView().title().toString();
-        if (!title.contains("'s gravestone")) { return; }
+        Inventory inventory = event.getInventory();
+        if (!(inventory.getHolder(false) instanceof GravestoneInventory)) { return; }
 
         ItemStack[] gravestoneInventory = event.getInventory().getContents();
 
@@ -74,7 +78,7 @@ public class GuiClose implements Listener {
                 GravestoneManager.deleteGravestone(location);
             } catch (SQLException exception) {
                 exception.printStackTrace();
-                System.out.println("Failed to delete the database entry! " + exception.getMessage());
+                plugin.getLogger().warning("Failed to delete the database entry! " + exception.getMessage());
             }
         } else {
             // UPDATE THE ENTRY
@@ -82,7 +86,7 @@ public class GuiClose implements Listener {
                 GravestoneDatabase.updateGravestone(gravestoneInventory, location);
             } catch (SQLException exception) {
                 exception.printStackTrace();
-                System.out.println("Failed to update the database entry! " + exception.getMessage());
+                plugin.getLogger().warning("Failed to update the database entry! " + exception.getMessage());
             }
         }
 
