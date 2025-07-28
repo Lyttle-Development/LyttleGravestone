@@ -250,7 +250,7 @@ public class RetrieveGraveStoneCommand implements Command<CommandSourceStack> {
                 }.runTask(plugin);
             } catch (SQLException exception) {
                 exception.printStackTrace();
-                System.out.println("Failed to delete the database entry! " + exception.getMessage());
+                plugin.getLogger().severe("Failed to delete the database entry! " + exception.getMessage());
             }
         });
     }

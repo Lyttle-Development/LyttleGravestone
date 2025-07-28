@@ -1,9 +1,10 @@
 package com.lyttledev.lyttlegravestone;
 
+import com.lyttledev.lyttlegravestone.commands.ListGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
-import com.lyttledev.lyttlegravestone.listeners.*;
+import com.lyttledev.lyttlegravestone.handlers.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
 import com.lyttledev.lyttleutils.utils.communication.Console;
 import com.lyttledev.lyttleutils.utils.communication.Message;
@@ -22,12 +23,12 @@ import java.io.File;
 import java.sql.SQLException;
 
 public final class LyttleGravestone extends JavaPlugin {
-    private GravestoneDatabase gravestoneDatabase;
-    private Economy economy;
     public Configs config;
     public Console console;
     public Message message;
     public GlobalConfig global;
+    private GravestoneDatabase gravestoneDatabase;
+    private Economy economy;
 
     @Override
     public void onEnable() {
@@ -53,7 +54,7 @@ public final class LyttleGravestone extends JavaPlugin {
         this.console = new Console(this);
         this.message = new Message(this, config.messages, global);
 
-        // Register the listeners
+        // Register the handlers
         new Death(this);
         new RightClick(this);
         new BreakBlock(this);
@@ -77,10 +78,9 @@ public final class LyttleGravestone extends JavaPlugin {
             GravestoneDatabase.initGravestonesCache();
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to connect to the database! " + exception.getMessage());
+            this.getLogger().severe("Failed to connect to the database! " + exception.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
     }
 
     @Override
@@ -102,6 +102,7 @@ public final class LyttleGravestone extends JavaPlugin {
         }
         // Lyttle gravestone command
         LyttleGravestoneCommand.register(this, commands);
+        ListGravestoneCommand.register(this, commands);
     }
 
     private boolean setupEconomy() {

@@ -1,4 +1,4 @@
-package com.lyttledev.lyttlegravestone.listeners;
+package com.lyttledev.lyttlegravestone.handlers;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
@@ -108,7 +108,7 @@ public class Death implements Listener {
 
         } catch (SQLException exception) {
             exception.printStackTrace();
-            System.out.println("Failed to create the database entry! " + exception.getMessage());
+            plugin.getLogger().severe("Failed to create the database entry! " + exception.getMessage());
         }
 
     }
