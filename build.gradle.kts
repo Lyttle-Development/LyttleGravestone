@@ -29,9 +29,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.io.papermc.paper.paper.api)
-    compileOnly(libs.com.github.milkbowl.vaultapi)
-    compileOnly(libs.org.xerial.sqlite.jdbc)
+    compileOnly("io.papermc.paper:paper-api:" + (property("paperVersion") as String) + "-R0.1-SNAPSHOT")
+    compileOnly("com.github.milkbowl.vault:VaultAPI:1.7")
+    compileOnly("org.xerial.sqlite-jdbc:sqlite-jdbc:3.46.0.0")
     implementation("com.lyttledev:lyttleutils:1.1.7")
 }
 
