@@ -102,7 +102,7 @@ public final class LyttleGravestone extends JavaPlugin {
         }
         // Lyttle gravestone command
         LyttleGravestoneCommand.register(this, commands);
-        ListGravestoneCommand.register(this, commands);
+        // ListGravestoneCommand.register(this, commands); // TODO: Finish
     }
 
     private boolean setupEconomy() {
