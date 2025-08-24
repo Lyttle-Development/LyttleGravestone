@@ -19,10 +19,9 @@ public class LyttleGravestoneCommand implements Command<CommandSourceStack> {
 
         LiteralArgumentBuilder<CommandSourceStack> commandBuilder =
             Commands.literal("lyttlegravestone")
-                .requires(src -> {
-                    CommandSender sender = src.getSender();
-                    return sender.hasPermission("lyttlegravestone.lyttlegravestone")
-                        || sender.hasPermission("mc.admin");
+                .requires(source -> {
+                    CommandSender sender = source.getSender();
+                    return sender.hasPermission("lyttlegravestone.lyttlegravestone");
                 })
                 // /lyttlegravestone reload
                 .then(Commands.literal("reload")
@@ -31,8 +30,7 @@ public class LyttleGravestoneCommand implements Command<CommandSourceStack> {
 
         commands.register(
             commandBuilder.build(),
-            "Lyttle Gravestone command",
-            List.of("lgv", "lg")
+            "Lyttle Gravestone admin command"
         );
     }
 
