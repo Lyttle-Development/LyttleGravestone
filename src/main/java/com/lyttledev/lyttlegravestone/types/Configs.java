@@ -1,30 +1,30 @@
 package com.lyttledev.lyttlegravestone.types;
 
 import com.lyttledev.lyttlegravestone.LyttleGravestone;
-import com.lyttledev.lyttleutils.types.Config;
+import com.lyttledev.lyttleutils.types.YamlConfig;
 
 public class Configs {
     private final LyttleGravestone plugin;
 
     // Configs
-    public Config general;
-    public Config messages;
+    public YamlConfig general;
+    public YamlConfig messages;
 
     // Default configs
-    public Config defaultMessages;
-    public Config defaultGeneral;
+    public YamlConfig defaultMessages;
+    public YamlConfig defaultGeneral;
 
 
     public Configs(LyttleGravestone plugin) {
         this.plugin = plugin;
 
         // Configs
-        general = new Config(plugin, "config.yml");
-        messages = new Config(plugin, "messages.yml");
+        general = new YamlConfig(plugin, "config.yml");
+        messages = new YamlConfig(plugin, "messages.yml");
 
         // Default configs
-        defaultMessages = new Config(plugin, "#defaults/messages.yml");
-        defaultGeneral = new Config(plugin, "#defaults/config.yml");
+        defaultMessages = new YamlConfig(plugin, "#defaults/messages.yml");
+        defaultGeneral = new YamlConfig(plugin, "#defaults/config.yml");
     }
 
     public void reload() {
