@@ -2,6 +2,7 @@ package com.lyttledev.lyttlegravestone;
 
 import com.lyttledev.lyttlegravestone.commands.LyttleGravestoneCommand;
 import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommand;
+import com.lyttledev.lyttlegravestone.commands.RetrieveGraveStoneCommandOld;
 import com.lyttledev.lyttlegravestone.database.GravestoneDatabase;
 import com.lyttledev.lyttlegravestone.listeners.*;
 import com.lyttledev.lyttlegravestone.types.Configs;
@@ -98,10 +99,10 @@ public final class LyttleGravestone extends JavaPlugin {
         Boolean command = (Boolean) config.general.get("retrieve_command_active");
         if (command) {
             // Retrieve command
-            RetrieveGraveStoneCommand.register(this, commands);
+            RetrieveGraveStoneCommand.createCommand(this,  commands);
         }
         // Lyttle gravestone command
-        LyttleGravestoneCommand.register(this, commands);
+        LyttleGravestoneCommand.createCommand(this, commands);
     }
 
     private boolean setupEconomy() {

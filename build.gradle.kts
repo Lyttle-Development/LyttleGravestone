@@ -29,10 +29,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.io.papermc.paper.paper.api)
-    compileOnly(libs.com.github.milkbowl.vaultapi)
+    compileOnly("io.papermc.paper:paper-api:" + (property("paperVersion") as String) + "-R0.1-SNAPSHOT")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") { exclude(group = "org.bukkit", module = "bukkit") }
+    compileOnly("net.luckperms:api:5.4")
     compileOnly(libs.org.xerial.sqlite.jdbc)
-    implementation("com.lyttledev:lyttleutils:1.1.1")
+    implementation("com.lyttledev:lyttleutils:1.2.1")
 }
 
 group = "com.lyttledev"
@@ -94,6 +95,12 @@ val copyContents by tasks.registering(Copy::class) {
 // Ensure processResources depends on copyContents
 tasks.named("processResources") {
     dependsOn(copyContents)
+}
+
+tasks.processResources {
+    filesMatching("paper-plugin.yml") {
+        expand(project.properties)
+    }
 }
 
 // --- Helper methods for Git integration ---

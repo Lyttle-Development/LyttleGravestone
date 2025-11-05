@@ -1,0 +1,16 @@
+name: LyttleGravestone
+description: Die in honor, and leave a gravestone behind!
+version: ${version}
+main: com.lyttledev.lyttlegravestone.LyttleGravestone
+api-version: '1.21'
+
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    LyttleScoreboardEconomy:
+      load: BEFORE
+      required: false
+      join-classpath: true

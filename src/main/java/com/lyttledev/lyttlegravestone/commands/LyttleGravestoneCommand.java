@@ -9,42 +9,40 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
-public class LyttleGravestoneCommand implements Command<CommandSourceStack> {
+public class LyttleGravestoneCommand {
     private static LyttleGravestone plugin;
 
-    public static void register(LyttleGravestone pl, Commands commands) {
-        plugin = pl;
+    public static void createCommand(LyttleGravestone lyttlePlugin, Commands commands) {
+        plugin = lyttlePlugin;
 
-        LiteralArgumentBuilder<CommandSourceStack> commandBuilder =
-            Commands.literal("lyttlegravestone")
-                .requires(src -> {
-                    CommandSender sender = src.getSender();
-                    return sender.hasPermission("lyttlegravestone.lyttlegravestone")
-                        || sender.hasPermission("mc.admin");
-                })
-                // /lyttlegravestone reload
+        // Define the different nodes
+        LiteralArgumentBuilder<CommandSourceStack> top = Commands.literal("lyttlegravestone")
                 .then(Commands.literal("reload")
-                    .executes(new LyttleGravestoneCommand())
-                );
+                        .requires(source -> source.getSender().hasPermission("lyttlegravestone.lyttlegravestone.reload"))
+                        .executes(LyttleGravestoneCommand::reloadNode));
 
+        // Defines root node functions
+        top.requires(source -> source.getSender().hasPermission("lyttlegravestone.lyttlegravestone"));
+        top.executes(LyttleGravestoneCommand::rootNode);
+
+        // Finish the command
         commands.register(
-            commandBuilder.build(),
-            "Lyttle Gravestone command",
-            List.of("lgv", "lg")
+                top.build(),
+                "Admin command for the LyttleGravestone plugin"
         );
     }
 
-    @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
-        CommandSender sender = source.getSender();
+    private static int rootNode(CommandContext<CommandSourceStack> context) {
+        CommandSender sender = context.getSource().getSender();
+        Component version = Component.text("Plugin version: " + plugin.getDescription().getVersion());
+        plugin.message.sendMessageRaw(sender, version);
+        return Command.SINGLE_SUCCESS;
+    }
 
-        // Execute reload subcommand
+    private static int reloadNode(CommandContext<CommandSourceStack> context) {
+        final CommandSender sender = context.getSource().getSender();
         plugin.config.reload();
         plugin.message.sendMessageRaw(sender, Component.text("The config has been reloaded"));
-
         return Command.SINGLE_SUCCESS;
     }
 }
