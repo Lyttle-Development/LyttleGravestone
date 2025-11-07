@@ -8,6 +8,7 @@ import com.lyttledev.lyttleutils.types.Message.Replacements;
 import com.lyttledev.lyttleutils.utils.convertion.ItemSerializer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -43,12 +44,19 @@ public class RetrieveGraveStoneCommand {
         plugin = lyttlePlugin;
 
         LiteralArgumentBuilder<CommandSourceStack> retrieveGravestone =  Commands.literal("retrieve-gravestone")
-            .then(Commands.argument("world", ArgumentTypes.world()))
-            .then(Commands.argument("coordinates", ArgumentTypes.blockPosition()))
+            .then(Commands.argument("world", StringArgumentType.string())
+                .suggests((context, builder) -> {
+                  builder.suggest("world");
+                  builder.suggest("world_nether");
+                  builder.suggest("world_the_end");
+                  return builder.buildFuture();
+                })
+            .then(Commands.argument("coordinates", ArgumentTypes.blockPosition())
                 .executes(RetrieveGraveStoneCommand::gravestoneNode)
-            .then(Commands.literal("confirm"))
-            .then(Commands.argument("price", IntegerArgumentType.integer()))
-                .executes(RetrieveGraveStoneCommand::confirmedGravestoneNode);
+                    .then(Commands.literal("confirm")
+                    .then(Commands.argument("price", IntegerArgumentType.integer())
+                        .executes(RetrieveGraveStoneCommand::confirmedGravestoneNode)))));
+
 
         commands.register(
                 retrieveGravestone.build(),
@@ -68,16 +76,20 @@ public class RetrieveGraveStoneCommand {
     // LOGIC AFTER CONFIRM
     private static int confirmedGravestoneNode(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         boolean usesVault = usingVault();
-        if (!usesVault) { deliveryLogic(RetrieveState.noVault, context); }
+        if (usesVault) { deliveryLogic(RetrieveState.confirmed, context); }
+        else { deliveryLogic(RetrieveState.noVault, context); }
         return Command.SINGLE_SUCCESS;
     }
 
     // Main logic
     private static void deliveryLogic(RetrieveState state, CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
+        // Get config options
         Integer configBlocks = (Integer) plugin.config.general.get("retrieve_command_blocks");
         Integer configPrice = (Integer) plugin.config.general.get("retrieve_command_price");
         Integer configWorldPrice = (Integer) plugin.config.general.get("retrieve_command_price__other_world");
 
+        // Check for user provided config values
         if (configBlocks == null) {
             throw new RuntimeException("PLUGIN GENERAL CONFIG retrieve_command_blocks IS SET INCORRECTLY!");
         }
@@ -88,6 +100,7 @@ public class RetrieveGraveStoneCommand {
             throw new RuntimeException("PLUGIN GENERAL CONFIG retrieve_command_price__other_world IS SET INCORRECTLY!");
         }
 
+        // Get basic variables
         CommandSourceStack source = context.getSource();
         Entity entity = source.getExecutor();
 
@@ -99,12 +112,13 @@ public class RetrieveGraveStoneCommand {
         UUID uuid = player.getUniqueId();
         Location location = entity.getLocation();
 
-        if (GravestoneManager.checkDelivery(uuid)) {
-            return;
-        }
+        // Check for an in progress delivery / add a delivery
+        if (GravestoneManager.checkDelivery(uuid)) { return; }
         GravestoneManager.addDelivery(uuid);
 
-        World world = context.getArgument("world", World.class);
+        // Get the location data
+        String worldName = context.getArgument("world", String.class);
+        World world = Bukkit.getWorld(worldName);
         BlockPositionResolver blockPositionResolver = context.getArgument("coordinates", BlockPositionResolver.class);
         BlockPosition blockPosition = blockPositionResolver.resolve(context.getSource());
 
@@ -114,6 +128,7 @@ public class RetrieveGraveStoneCommand {
 
         Location gravestoneLocation = new Location(world, x, y, z);
 
+        // Fetch the gravestone from the database
         String[] values;
         try {
             values = GravestoneDatabase.getGravestone(gravestoneLocation);
@@ -121,6 +136,7 @@ public class RetrieveGraveStoneCommand {
             throw new RuntimeException(e);
         }
 
+        // Handle it if nothing was returned by the database
         if (values == null) {
             Replacements replacements = new Replacements.Builder()
                     .add("<COORDINATES>", x + " " + y + " " + z)
@@ -145,6 +161,16 @@ public class RetrieveGraveStoneCommand {
 
         // Logic without vault
         if (state == RetrieveState.noVault) {
+
+
+
+
+
+
+
+
+
+
 
             return;
         }
@@ -214,21 +240,23 @@ public class RetrieveGraveStoneCommand {
         return usesVault;
     }
 
-    private void startDelivery(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
-        // Run your async function
-        runAsync(() -> {
-            try {
-                // Start animation asynchronously and wait for it to complete
-                startAnimation(location).get();
-                runEnd(player, location, gravestoneLocation, inventory, cost, uuid).get();
-            } catch (Exception e) {
-                runEnd(player, location, gravestoneLocation, inventory, cost, uuid);
-                plugin.getLogger().log(Level.SEVERE, e.getMessage());
+    private static void startDelivery(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
+
+        new BukkitRunnable() {
+            public void run() {
+                try {
+                    // Start animation asynchronously and wait for it to complete
+                    startAnimation(location).get();
+                    runEnd(player, location, gravestoneLocation, inventory, cost, uuid).get();
+                } catch (Exception e) {
+                    runEnd(player, location, gravestoneLocation, inventory, cost, uuid);
+                    plugin.getLogger().log(Level.SEVERE, e.getMessage());
+                }
             }
-        });
+        }.runTaskAsynchronously(plugin);
     }
 
-    private CompletableFuture<Void> runEnd(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
+    private static CompletableFuture<Void> runEnd(Player player, Location location, Location gravestoneLocation, ItemStack[] inventory, int cost, UUID uuid) {
         return CompletableFuture.runAsync(() -> {
             // Run synchronous Bukkit tasks
             new BukkitRunnable() {
@@ -264,7 +292,7 @@ public class RetrieveGraveStoneCommand {
         });
     }
 
-    private CompletableFuture<Void> startAnimation(Location playerLocation) {
+    private static CompletableFuture<Void> startAnimation(Location playerLocation) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         new BukkitRunnable() {
@@ -293,7 +321,7 @@ public class RetrieveGraveStoneCommand {
         return future;
     }
 
-    private void startAnimationTasks(Creeper creeper, Location playerLocation, CompletableFuture<Void> future) {
+    private static void startAnimationTasks(Creeper creeper, Location playerLocation, CompletableFuture<Void> future) {
         // Move to location 1 block in front of the looking position of the player
         playerLocation.add(playerLocation.getDirection().multiply(1));
 
@@ -369,7 +397,7 @@ public class RetrieveGraveStoneCommand {
         }.runTaskTimer(plugin, 0L, rangeCheckInterval); // Run every rangeCheckInterval ticks
     }
 
-    private void explodeCreeper(Creeper creeper) {
+    private static void explodeCreeper(Creeper creeper) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -383,8 +411,5 @@ public class RetrieveGraveStoneCommand {
                 }
             }
         }.runTask(plugin);
-    }
-    private void runAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
     }
 }

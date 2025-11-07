@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import static com.lyttledev.lyttleutils.utils.entity.Player.getDisplayName;
 
@@ -77,7 +78,7 @@ public class RightClick implements Listener {
             openGui(player, inventory, graveOwnerName);
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
             System.out.println("Failed to get the database entry! " + exception.getMessage());
         }
 

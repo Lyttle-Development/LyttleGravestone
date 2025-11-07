@@ -22,6 +22,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class Death implements Listener {
     public static LyttleGravestone plugin;
@@ -85,7 +86,7 @@ public class Death implements Listener {
 
             Boolean command = (Boolean) plugin.config.general.get("retrieve_command_active");
 
-            if (command) {
+            if (Boolean.TRUE.equals(command)) {
                 Replacements replacements = new Replacements.Builder()
                     .add("<WORLD>", world)
                     .add("<X>", String.valueOf(x))
@@ -107,7 +108,7 @@ public class Death implements Listener {
             }
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
             System.out.println("Failed to create the database entry! " + exception.getMessage());
         }
 

@@ -13,11 +13,14 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class GuiClose implements Listener {
+    LyttleGravestone plugin;
 
     public GuiClose(LyttleGravestone plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -73,7 +76,7 @@ public class GuiClose implements Listener {
                 location.getBlock().setType(Material.AIR);
                 GravestoneManager.deleteGravestone(location);
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                 System.out.println("Failed to delete the database entry! " + exception.getMessage());
             }
         } else {
@@ -81,7 +84,7 @@ public class GuiClose implements Listener {
             try {
                 GravestoneDatabase.updateGravestone(gravestoneInventory, location);
             } catch (SQLException exception) {
-                exception.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, exception.getMessage(), exception);
                 System.out.println("Failed to update the database entry! " + exception.getMessage());
             }
         }
