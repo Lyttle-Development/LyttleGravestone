@@ -161,17 +161,13 @@ public class RetrieveGraveStoneCommand {
 
         // Logic without vault
         if (state == RetrieveState.noVault) {
+            // Send delivery message
+            plugin.message.sendMessage(player, "retrieve_confirmed");
 
-
-
-
-
-
-
-
-
-
-
+            // Inventory logic
+            String DatabaseInventory = values[1];
+            ItemStack[] inventory = ItemSerializer.deserializeInventory(DatabaseInventory, 0);
+            startDelivery(player, location, gravestoneLocation, inventory, 0, uuid);
             return;
         }
 
@@ -282,7 +278,7 @@ public class RetrieveGraveStoneCommand {
                     public void run() {
                         // Remove the gravestone block
                         gravestoneLocation.getBlock().setType(Material.AIR);
-                        economy.withdrawPlayer(player, cost);
+                        if (usingVault()) { economy.withdrawPlayer(player, cost); }
                     }
                 }.runTask(plugin);
             } catch (SQLException exception) {
