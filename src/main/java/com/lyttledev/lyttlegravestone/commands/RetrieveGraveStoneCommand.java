@@ -104,9 +104,7 @@ public class RetrieveGraveStoneCommand {
         CommandSourceStack source = context.getSource();
         Entity entity = source.getExecutor();
 
-        if (!(entity instanceof Player)) {
-            return;
-        }
+        if (!(entity instanceof Player)) { return; }
 
         Player player = (Player) entity;
         UUID uuid = player.getUniqueId();
@@ -205,7 +203,7 @@ public class RetrieveGraveStoneCommand {
         if (state == RetrieveState.notConfirmed) {
             Replacements replacements = new Replacements.Builder()
                     .add("<PRICE>", String.valueOf(cost))
-                    .add("<COMMAND>", "/retrieve-gravestone " + world + " " + x + " " + y + " " + z + " confirm " + cost)
+                    .add("<COMMAND>", "/retrieve-gravestone " + worldName + " " + x + " " + y + " " + z + " confirm " + cost)
                     .build();
 
             GravestoneManager.removeDelivery(uuid);
